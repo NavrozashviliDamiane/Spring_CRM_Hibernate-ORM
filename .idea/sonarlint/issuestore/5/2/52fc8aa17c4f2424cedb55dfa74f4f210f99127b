@@ -1,16 +1,20 @@
 
-a
-java:S1854"?Remove this useless assignment to local variable "userService".(şıìßÿÿÿÿÿ8•‘†ëŞ1
-R
-java:S1481"0Remove this unused "userService" local variable.(şıìßÿÿÿÿÿ8£‘†ëŞ1
-L	java:S106"+Replace this use of System.out by a logger.(ñ©Ò„ıÿÿÿÿ8´Â¿ëŞ1
-W	java:S125"<This block of commented-out lines of code should be removed.(Ú×¨\8µÂ¿ëŞ1
-G	java:S106$"+Replace this use of System.out by a logger.(ØËÔê8†ÀëŞ1
-O
-java:S1135&"2Complete the task associated to this TODO comment.(ı‰‰÷8‡ÀëŞ1
-L
-java:S1128"/Remove this unused import 'org.damiane.entity'.(é’¥Á8ÍŞ»ëŞ1
 _
-java:S1128"BRemove this unused import 'org.damiane.repository.UserRepository'.(Ã”øÊ8ÍŞ»ëŞ1
-H
-java:S1128	"+Remove this unused import 'java.util.Date'.(¸…¼ü8ÎŞ»ëŞ1
+java:S1854"BRemove this useless assignment to local variable "trainerService".(®ñÖ8¨—ÄúŞ1
+_
+java:S1854"BRemove this useless assignment to local variable "traineeService".(áì °8ÎÚçşŞ1
+a
+java:S1854"?Remove this useless assignment to local variable "userService".(şıìßÿÿÿÿÿ8©—ÄúŞ1
+R
+java:S1481"0Remove this unused "userService" local variable.(şıìßÿÿÿÿÿ8´—ÄúŞ1
+P
+java:S1481"3Remove this unused "traineeService" local variable.(áì °8àÚçşŞ1
+P
+java:S1481"3Remove this unused "trainerService" local variable.(®ñÖ8¹—ÄúŞ1
+N
+java:S1874",Remove this use of "Date"; it is deprecated.(ü¡ğıûÿÿÿÿ8ÊşñşŞ1
+I
+java:S1874",Remove this use of "Date"; it is deprecated.(Ääˆ¦8ËşñşŞ1
+G	java:S106("+Replace this use of System.out by a logger.(Å·œî8èÚçşŞ1
+L	java:S106*"+Replace this use of System.out by a logger.(ü”¡Ÿüÿÿÿÿ8êÚçşŞ1
+G	java:S106,"+Replace this use of System.out by a logger.(šÌ‡™8ìÚçşŞ1

@@ -1,9 +1,10 @@
 package org.damiane.service;
 
-import org.damiane.entity.Trainee;
-import org.damiane.entity.Training;
+import org.damiane.entity.*;
 import org.damiane.repository.TraineeRepository;
+import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
+import org.damiane.repository.TrainingTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,12 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Autowired
     private TraineeRepository traineeRepository;
+
+    @Autowired
+    private TrainerRepository trainerRepository;
+
+    @Autowired
+    private TrainingTypeRepository trainingTypeRepository;
 
     @Override
     public List<Training> getAllTrainings() {
@@ -55,8 +62,31 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public List<Training> getTraineeTrainings(String username, Date fromDate, Date toDate, String trainerName, String trainingType) {
-        // Implement the query based on the provided criteria
-        return trainingRepository.findTrainingsByCriteria(username, fromDate, toDate, trainerName, trainingType);
+    public List<Training> getTrainingsByTraineeUsernameAndCriteria(String username, Date fromDate, Date toDate, String trainerName, TrainingTypeValue trainingTypeName) {
+        // Find the trainee by username
+        Trainee trainee = traineeRepository.findByUserUsername(username);
+
+        Trainer trainer = trainerRepository.findByUserUsername(trainerName);
+
+        TrainingType trainingTypeIs = trainingTypeRepository.findByTrainingType(trainingTypeName);
+
+
+        if (trainee == null) {
+            // Trainee not found, return empty list or handle appropriately
+            return List.of();
+        }
+
+        // Get trainee ID
+        Long traineeId = trainee.getId();
+
+        Long trainerId = trainer.getId();
+
+        Long trainingTypeId = trainingTypeIs.getId();
+
+        // Use trainee ID to query trainings
+        return trainingRepository.findByTraineeIdAndTrainingDateBetweenAndTrainerIdAndTrainingTypeId(
+                traineeId, fromDate, toDate, trainerId, trainingTypeId);
     }
+
+
 }

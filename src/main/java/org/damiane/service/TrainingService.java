@@ -1,8 +1,10 @@
 package org.damiane.service;
 
 import org.damiane.entity.Training;
+import org.damiane.entity.TrainingTypeValue;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -15,5 +17,5 @@ public interface TrainingService {
 
     void updateTrainingForTrainee(String username);
 
-    List<Training> getTraineeTrainings(String username, Date fromDate, Date toDate, String trainerName, String trainingType);
+    List<Training> getTrainingsByTraineeUsernameAndCriteria(String username, Date fromDate, Date toDate, String trainerName, TrainingTypeValue trainingTypeName);
 }

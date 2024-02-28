@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface TrainerRepository extends JpaRepository<Trainer, Long> {
     @EntityGraph(attributePaths = "user")
     Trainer findByUserUsername(String username);
+
+
 }
