@@ -6,7 +6,9 @@ import org.damiane.repository.UserRepository;
 import org.damiane.service.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,24 +22,26 @@ public class Main {
 
 
 
-        // New profile information
-        // Demo activation and deactivation of a trainer
+        String usernameToDelete = "Alice.Clark";
+
+        // Delete the trainee profile by username
+        traineeService.deleteTraineeByUsername(usernameToDelete);
+
+        // Verify if the trainee profile has been deleted
+        if (traineeService.getTraineeByUsername(usernameToDelete) == null) {
+            System.out.println("Trainee profile with username " + usernameToDelete + " deleted successfully.");
+        } else {
+            System.out.println("Failed to delete trainee profile with username " + usernameToDelete);
+        }
 
 
-        // Demo activation and deactivation of a trainee
-        Long traineeId = 1L;
-        Long trainerId = 2L;
-        System.out.println("Deactivating trainee...");
-//        traineeService.activateTrainee(traineeId);
-        traineeService.deactivateTrainee(traineeId);
-        trainerService.activateTrainer(trainerId);
 
 
-        System.out.println("Trainee deactivated successfully.");
 
-        //TODO Implement activate/deactivate logic correctly bassed on this example ebove
 
         // Close the Spring context
         context.close();
     }
+
+
 }

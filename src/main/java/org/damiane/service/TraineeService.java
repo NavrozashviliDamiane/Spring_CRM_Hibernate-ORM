@@ -33,7 +33,7 @@ public interface TraineeService {
 
     void activateTrainee(Long traineeId);
 
-
+    void deleteTraineeByUsername(String username);
 
 
     // TraineeServiceImpl.java

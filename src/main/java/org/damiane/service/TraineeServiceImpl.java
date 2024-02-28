@@ -150,16 +150,14 @@ public class TraineeServiceImpl implements TraineeService {
         }
     }
 
-//    @Override
-//    public void activateTrainee(Long userId) {
-//        Optional<User> userOptional = userRepository.findById(userId);
-//        userOptional.ifPresent(user -> {
-//            user.setActive(true);
-//            userRepository.save(user);
-//
-//        });
-//    }
+    @Override
+    public void deleteTraineeByUsername(String username) {
+        Trainee trainee = traineeRepository.findByUserUsername(username);
 
+        if (trainee != null) {
+            traineeRepository.delete(trainee);
+        }
+    }
 
 
 
