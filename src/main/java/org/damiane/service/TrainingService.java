@@ -18,4 +18,6 @@ public interface TrainingService {
     void updateTrainingForTrainee(String username);
 
     List<Training> getTrainingsByTraineeUsernameAndCriteria(String username, Date fromDate, Date toDate, String trainerName, TrainingTypeValue trainingTypeName);
+
+    List<Training> getTrainingsByTrainerUsernameAndCriteria(String username, Date fromDate, Date toDate, String traineeName);
 }

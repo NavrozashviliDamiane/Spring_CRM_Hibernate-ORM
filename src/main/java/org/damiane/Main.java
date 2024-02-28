@@ -27,19 +27,16 @@ public class Main {
         Date toDate = new Date(124, 11, 12);
 
         // Simulate inputs
-        String traineeUsername = "Alice.Anderson";
-        String trainerUsername = "John.Doe1";
-        TrainingTypeValue trainingType = TrainingTypeValue.CROSSFIT; // Assuming CARDIO is the desired training type
+        String traineeName = "Alice.Anderson";
+        String username = "John.Doe1";
 
-        // Call the service method
-        List<Training> trainings = trainingService.getTrainingsByTraineeUsernameAndCriteria(
-                traineeUsername, fromDate, toDate, trainerUsername, trainingType);
+        List<Training> trainings = trainingService.getTrainingsByTrainerUsernameAndCriteria(username, fromDate, toDate, traineeName);
 
         // Process the results
         if (trainings.isEmpty()) {
-            System.out.println("No trainings found for trainee: " + traineeUsername);
+            System.out.println("No trainings found for trainee: " + username);
         } else {
-            System.out.println("Trainings for trainee " + traineeUsername + ":");
+            System.out.println("Trainings for trainee " + username + ":");
             for (Training training : trainings) {
                 System.out.println(training); // Assuming Training class has a proper toString() method
             }

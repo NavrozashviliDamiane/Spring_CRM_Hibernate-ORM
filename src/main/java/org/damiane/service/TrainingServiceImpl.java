@@ -89,4 +89,25 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
 
+    @Override
+    public List<Training> getTrainingsByTrainerUsernameAndCriteria(String username, Date fromDate, Date toDate, String traineeName) {
+
+        Trainer trainer = trainerRepository.findByUserUsername(username);
+        Trainee trainee = traineeRepository.findByUserUsername(traineeName);
+
+
+        if (trainer == null) {
+            return List.of();
+        }
+
+        Long trainerId = trainer.getId();
+
+        Long traineeId = trainee.getId();
+
+
+        return trainingRepository.findByTrainerIdAndTrainingDateBetweenAndTraineeId(
+                trainerId, fromDate, toDate, traineeId);
+    }
+
+
 }
