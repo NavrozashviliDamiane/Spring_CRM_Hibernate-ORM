@@ -1,0 +1,44 @@
+DROP TABLE IF EXISTS trainings, trainers, trainees, users, training_types CASCADE;
+
+
+
+    CREATE TABLE training_types (
+        id SERIAL PRIMARY KEY,
+        trainingtype VARCHAR(255) NOT NULL UNIQUE
+);
+        CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        firstname VARCHAR(255) NOT NULL,
+        lastname VARCHAR(255) NOT NULL,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        isactive BOOLEAN NOT NULL
+        );
+
+        CREATE TABLE trainees (
+        id SERIAL PRIMARY KEY,
+        user_id BIGINT REFERENCES users(id),
+        dateofbirth DATE,
+        address VARCHAR(255),
+        CONSTRAINT fk_trainee_user FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+
+        CREATE TABLE trainers (
+        id SERIAL PRIMARY KEY,
+        user_id BIGINT REFERENCES users(id),
+        training_type_id BIGINT,
+        CONSTRAINT fk_trainer_user FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+
+        CREATE TABLE trainings (
+        id SERIAL PRIMARY KEY,
+        traineeid BIGINT,
+        trainerid BIGINT,
+        trainingtypeid BIGINT,
+        trainingname VARCHAR(255) NOT NULL,
+        trainingdate DATE NOT NULL,
+        trainingduration INT NOT NULL,
+        CONSTRAINT fk_training_trainee FOREIGN KEY (traineeid) REFERENCES trainees(id),
+        CONSTRAINT fk_training_trainer FOREIGN KEY (trainerid) REFERENCES trainers(id),
+        CONSTRAINT fk_training_type FOREIGN KEY (trainingtypeid) REFERENCES training_types(id)
+        );

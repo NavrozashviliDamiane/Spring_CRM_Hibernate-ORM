@@ -1,0 +1,16 @@
+
+a
+java:S1854"?Remove this useless assignment to local variable "userService".(ώύμίÿÿÿÿÿ8•‘†λή1
+R
+java:S1481"0Remove this unused "userService" local variable.(ώύμίÿÿÿÿÿ8£‘†λή1
+L	java:S106"+Replace this use of System.out by a logger.(ρ©Ò„ύÿÿÿÿ8΄ΒΏλή1
+W	java:S125"<This block of commented-out lines of code should be removed.(ΪΧ¨\8µΒΏλή1
+G	java:S106$"+Replace this use of System.out by a logger.(ΨΛΤκ8†ΐλή1
+O
+java:S1135&"2Complete the task associated to this TODO comment.(ύ‰‰χ8‡ΐλή1
+L
+java:S1128"/Remove this unused import 'org.damiane.entity'.(ι’¥Α8Νή»λή1
+_
+java:S1128"BRemove this unused import 'org.damiane.repository.UserRepository'.(Γ”ψΚ8Νή»λή1
+H
+java:S1128	"+Remove this unused import 'java.util.Date'.(Έ…Όό8Ξή»λή1
