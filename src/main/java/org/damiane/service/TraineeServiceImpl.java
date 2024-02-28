@@ -24,6 +24,9 @@ public class TraineeServiceImpl implements TraineeService {
     private UserRepository userRepository;
 
     @Autowired
+    private TrainingService trainingService;
+
+    @Autowired
     private EntityManager entityManager;
 
 
@@ -50,14 +53,11 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public Trainee updateTraineeProfile(String username, String firstName, String lastName, Date dateOfBirth, String address) {
-        // Retrieve the trainer entity based on the provided username
         Trainee trainee = traineeRepository.findByUserUsername(username);
 
-        // Check if the trainer exists
         if (trainee != null) {
             User user = trainee.getUser();
 
-            // Update the user's profile attributes if new values are provided
             if (firstName != null) {
                 user.setFirstName(firstName);
             }
@@ -68,13 +68,10 @@ public class TraineeServiceImpl implements TraineeService {
             trainee.setDateOfBirth(dateOfBirth);
             trainee.setAddress(address);
 
-            // Save the updated user entity
             userService.saveUser(user);
 
-            // Save the updated trainer entity
             return traineeRepository.save(trainee);
         } else {
-            // Handle the case where the trainer doesn't exist
             return null;
         }
     }
@@ -110,21 +107,6 @@ public class TraineeServiceImpl implements TraineeService {
         traineeRepository.deleteById(id);
     }
 
-    // TraineeServiceImpl.java
-
-
-
-    // UserServiceImpl.java
-
-//    @Override
-//    public void deactivateTrainee(Long userId) {
-//        Optional<User> userOptional = userRepository.findById(userId);
-//        userOptional.ifPresent(user -> {
-//            user.setActive(false);
-//            userRepository.save(user);
-//
-//        });
-//    }
 
     @Override
     public void activateTrainee(Long traineeId) {
@@ -152,12 +134,14 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public void deleteTraineeByUsername(String username) {
+        trainingService.updateTrainingForTrainee(username);
+
         Trainee trainee = traineeRepository.findByUserUsername(username);
 
         if (trainee != null) {
             traineeRepository.delete(trainee);
         }
-    }
+}
 
 
 

@@ -12,34 +12,19 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        // Create an application context with AppConfig
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 
-        // Obtain the required beans from the Spring context
         UserService userService = context.getBean(UserService.class);
         TraineeService traineeService = context.getBean(TraineeService.class);
         TrainerService trainerService = context.getBean(TrainerService.class);
 
 
 
-        String usernameToDelete = "Alice.Clark";
+       String username = "Alice.Smith";
 
-        // Delete the trainee profile by username
-        traineeService.deleteTraineeByUsername(usernameToDelete);
-
-        // Verify if the trainee profile has been deleted
-        if (traineeService.getTraineeByUsername(usernameToDelete) == null) {
-            System.out.println("Trainee profile with username " + usernameToDelete + " deleted successfully.");
-        } else {
-            System.out.println("Failed to delete trainee profile with username " + usernameToDelete);
-        }
+       traineeService.deleteTraineeByUsername(username);
 
 
-
-
-
-
-        // Close the Spring context
         context.close();
     }
 

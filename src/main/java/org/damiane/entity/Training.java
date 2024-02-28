@@ -18,15 +18,15 @@ public class Training {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainee_id", referencedColumnName = "id")
+    @JoinColumn(name = "traineeid", referencedColumnName = "id")
     private Trainee trainee;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainer_id", referencedColumnName = "id")
+    @JoinColumn(name = "trainerid", referencedColumnName = "id")
     private Trainer trainer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "training_type_id", referencedColumnName = "id")
+    @JoinColumn(name = "trainingtypeid", referencedColumnName = "id")
     private TrainingType trainingType;
 
     @Column(nullable = false)
@@ -36,5 +36,5 @@ public class Training {
     private Date trainingDate;
 
     @Column(nullable = false)
-    private int trainingDuration;
+    private Integer trainingDuration;
 }
