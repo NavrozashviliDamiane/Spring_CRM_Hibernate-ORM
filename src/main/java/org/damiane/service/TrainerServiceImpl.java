@@ -1,6 +1,7 @@
 package org.damiane.service;
 
 import org.damiane.entity.*;
+import org.damiane.exception.UnauthorizedAccessException;
 import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
