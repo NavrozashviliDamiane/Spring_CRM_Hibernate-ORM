@@ -41,6 +41,29 @@ public class TrainingServiceImpl implements TrainingService {
         return trainingRepository.save(training);
     }
 
+
+    @Override
+    public Training createTraining(String traineeUsername, String trainerUsername, TrainingTypeValue trainingTypeValue, String trainingName,  Date trainingDate, Integer trainingDuration ){
+
+        Trainee trainee = traineeRepository.findByUserUsername(traineeUsername);
+
+        Trainer trainer = trainerRepository.findByUserUsername(trainerUsername);
+
+        TrainingType trainingTypeIs = trainingTypeRepository.findByTrainingType(trainingTypeValue);
+
+        Training training = new Training();
+
+        training.setTrainee(trainee);
+        training.setTrainer(trainer);
+        training.setTrainingType(trainingTypeIs);
+        training.setTrainingName(trainingName);
+        training.setTrainingDate(trainingDate);
+        training.setTrainingDuration(trainingDuration);
+
+        return trainingRepository.save(training);
+
+    }
+
     @Override
     public void deleteTraining(Long id) {
         trainingRepository.deleteById(id);

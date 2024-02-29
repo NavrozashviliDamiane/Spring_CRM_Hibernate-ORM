@@ -12,6 +12,9 @@ public interface TrainingService {
     List<Training> getAllTrainings();
     Training getTrainingById(Long id);
     Training saveTraining(Training training);
+
+    Training createTraining(String traineeUsername, String trainerUsername, TrainingTypeValue trainingTypeValue, String trainingName, Date trainingDate, Integer trainingDuration);
+
     void deleteTraining(Long id);
 
 

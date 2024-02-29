@@ -1,16 +1,16 @@
 package org.damiane.service;
 
-import org.damiane.entity.Trainer;
-import org.damiane.entity.TrainingType;
-import org.damiane.entity.TrainingTypeValue;
-import org.damiane.entity.User;
+import org.damiane.entity.*;
+import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
+import org.damiane.repository.TrainingRepository;
 import org.damiane.repository.TrainingTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TrainerServiceImpl implements TrainerService {
@@ -23,6 +23,12 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Autowired
     private TrainingTypeRepository trainingTypeRepository;
+
+    @Autowired
+    private TraineeRepository traineeRepository;
+
+    @Autowired
+    private TrainingRepository trainingRepository;
 
 
 
@@ -111,12 +117,16 @@ public class TrainerServiceImpl implements TrainerService {
 
         Trainer trainer = new Trainer();
         trainer.setUser(user);
-        trainer.setTrainingType(trainingType);
 
-        if (trainingType.getId() == null) {
+        TrainingType existingTrainingType = trainingTypeRepository.findByTrainingType(trainingType.getTrainingType());
+        if (existingTrainingType != null) {
+            // If the training type already exists, use the existing one
+            trainer.setTrainingType(existingTrainingType);
+        } else {
+            // If the training type doesn't exist, save the new training type
             trainingTypeRepository.save(trainingType);
+            trainer.setTrainingType(trainingType);
         }
-
 
         return trainerRepository.save(trainer);
     }
@@ -152,9 +162,32 @@ public class TrainerServiceImpl implements TrainerService {
         }
     }
 
-    // TraineeServiceImpl.java
+    public List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername) {
+        // + Step 1: Find all trainers
+        List<Trainer> allTrainers = trainerRepository.findAll();
+
+        Trainee trainee = traineeRepository.findByUserUsername(traineeUsername);
 
 
+        // Step 2: Find trainings associated with the trainee
+        List<Training> trainingsWithTrainee = trainingRepository.findByTraineeId(trainee.getId());
 
+        // Step 3: Find trainers who are in these trainings
+        List<Trainer> trainersInTrainingsWithTrainee = trainingsWithTrainee.stream()
+                .map(Training::getTrainer)
+                .collect(Collectors.toList());
+
+
+        // Step 4: Identify trainers who are not associated with the same trainings as the trainee
+        List<Trainer> unassignedTrainers = allTrainers.stream()
+                .filter(trainer -> !trainersInTrainingsWithTrainee.contains(trainer))
+                .collect(Collectors.toList());
+
+
+        // Step 5: Return the unassigned trainers
+        return unassignedTrainers;
+
+
+    }
 
 }

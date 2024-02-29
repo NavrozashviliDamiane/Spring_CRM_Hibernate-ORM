@@ -11,5 +11,7 @@ public interface TraineeRepository extends JpaRepository<Trainee, Long> {
     @EntityGraph(attributePaths = "user")
     Trainee findByUserUsername(String username);
 
+
+
 }
 

@@ -29,4 +29,6 @@ public interface TrainerService {
     void activateTrainer(Long trainerId);
 
     void deactivateTrainer(Long trainerId);
+
+    List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername);
 }
