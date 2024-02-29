@@ -24,14 +24,13 @@ public class Main {
 
         TrainingType trainingType = new TrainingType(TrainingTypeValue.CARDIO);
 
-        // Create a trainer
-        String traineeUsername = "trainee_username";
+        String traineeUsername = "Alice.Anderson";
 
         List<Trainer> unassignedTrainers = trainerService.findUnassignedTrainersByTraineeUsername(traineeUsername);
 
         System.out.println("Unassigned Trainers for Trainee with Username '" + traineeUsername + "':");
         for (Trainer trainer : unassignedTrainers) {
-            System.out.println("Trainer ID: " + trainer.getId() + ", Trainer User ID: " + trainer.getUser().getId());
+            System.out.println("Trainer ID: " + trainer.getId());
         }
 
 

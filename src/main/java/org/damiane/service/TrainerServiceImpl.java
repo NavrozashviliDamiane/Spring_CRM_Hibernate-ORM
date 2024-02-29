@@ -163,30 +163,22 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     public List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername) {
-        // + Step 1: Find all trainers
+
         List<Trainer> allTrainers = trainerRepository.findAll();
 
         Trainee trainee = traineeRepository.findByUserUsername(traineeUsername);
 
-
-        // Step 2: Find trainings associated with the trainee
         List<Training> trainingsWithTrainee = trainingRepository.findByTraineeId(trainee.getId());
 
-        // Step 3: Find trainers who are in these trainings
         List<Trainer> trainersInTrainingsWithTrainee = trainingsWithTrainee.stream()
                 .map(Training::getTrainer)
                 .collect(Collectors.toList());
 
-
-        // Step 4: Identify trainers who are not associated with the same trainings as the trainee
         List<Trainer> unassignedTrainers = allTrainers.stream()
                 .filter(trainer -> !trainersInTrainingsWithTrainee.contains(trainer))
                 .collect(Collectors.toList());
 
-
-        // Step 5: Return the unassigned trainers
         return unassignedTrainers;
-
 
     }
 

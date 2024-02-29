@@ -12,7 +12,6 @@ public interface TrainerRepository extends JpaRepository<Trainer, Long> {
     @EntityGraph(attributePaths = "user")
     Trainer findByUserUsername(String username);
 
-    List<Trainer> findByTrainingsTraineeUserUsername(String username);
 
 
 
