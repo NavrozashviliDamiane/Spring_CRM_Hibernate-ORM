@@ -30,6 +30,11 @@ public class TrainerServiceImpl implements TrainerService {
     @Autowired
     private TrainingRepository trainingRepository;
 
+    @Autowired
+    private AuthenticateService authenticateService;
+
+
+
 
 
 
@@ -162,7 +167,11 @@ public class TrainerServiceImpl implements TrainerService {
         }
     }
 
-    public List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername) {
+    public List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername, String password) {
+
+        if (!authenticateService.matchUserCredentials(traineeUsername, password)) {
+            throw new UnauthorizedAccessException("Trainer authentication failed");
+        }
 
         List<Trainer> allTrainers = trainerRepository.findAll();
 

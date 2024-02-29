@@ -30,5 +30,5 @@ public interface TrainerService {
 
     void deactivateTrainer(Long trainerId);
 
-    List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername);
+    List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername, String password);
 }

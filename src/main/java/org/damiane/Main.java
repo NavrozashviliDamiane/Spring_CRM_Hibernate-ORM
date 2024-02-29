@@ -21,6 +21,7 @@ public class Main {
         TraineeService traineeService = context.getBean(TraineeService.class);
         TrainerService trainerService = context.getBean(TrainerService.class);
         TrainingService trainingService = context.getBean(TrainingService.class);
+        AuthenticateService authenticateService = context.getBean(AuthenticateService.class);
 
         TrainingType trainingType = new TrainingType(TrainingTypeValue.CARDIO);
 
@@ -33,13 +34,19 @@ public class Main {
             System.out.println("Trainer ID: " + trainer.getId());
         }
 
+        String username = "Alice.Smith";
+        String password = "changedTraineePasswor";
+
+        Boolean authenticationResult = authenticateService.matchUserCredentials(username, password);
+
+        if (authenticationResult==true) {
+            System.out.println("Authentication Successfull");
+        } else {
+            System.out.println("Authentication failed");
+        }
+
 
         context.close();
     }
-
-
-
-
-
 
 }
