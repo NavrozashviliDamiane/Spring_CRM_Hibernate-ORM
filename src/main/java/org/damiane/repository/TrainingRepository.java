@@ -1,7 +1,6 @@
 package org.damiane.repository;
 
 import org.damiane.entity.Training;
-import org.damiane.entity.TrainingTypeValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

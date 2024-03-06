@@ -1,16 +1,21 @@
-package org.damiane.service;
+package org.damiane.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.damiane.entity.*;
 import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
 import org.damiane.repository.TrainingTypeRepository;
+import org.damiane.service.AuthenticateService;
+import org.damiane.service.TrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class TrainingServiceImpl implements TrainingService {
 
@@ -26,24 +31,37 @@ public class TrainingServiceImpl implements TrainingService {
     @Autowired
     private TrainingTypeRepository trainingTypeRepository;
 
+    @Autowired
+    private AuthenticateService authenticateService;
+
     @Override
-    public List<Training> getAllTrainings() {
+    public List<Training> getAllTrainings(String username, String password) {
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
         return trainingRepository.findAll();
     }
 
     @Override
-    public Training getTrainingById(Long id) {
+    public Training getTrainingById(Long id, String username, String password) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
+
         return trainingRepository.findById(id).orElse(null);
     }
 
-    @Override
-    public Training saveTraining(Training training) {
-        return trainingRepository.save(training);
-    }
-
 
     @Override
-    public Training createTraining(String traineeUsername, String trainerUsername, TrainingTypeValue trainingTypeValue, String trainingName,  Date trainingDate, Integer trainingDuration ){
+    @Transactional
+    public Training createTraining(String traineeUsername, String trainerUsername, TrainingTypeValue trainingTypeValue,
+                                   String trainingName, Date trainingDate, Integer trainingDuration,
+                                   String password){
+
+        authenticateService.matchUserCredentials(trainerUsername, password);
+        log.info("User Authenticated Successfully");
+
 
         Trainee trainee = traineeRepository.findByUserUsername(traineeUsername);
 
@@ -60,64 +78,73 @@ public class TrainingServiceImpl implements TrainingService {
         training.setTrainingDate(trainingDate);
         training.setTrainingDuration(trainingDuration);
 
+        log.info("Training Created Successfully");
         return trainingRepository.save(training);
 
+
     }
 
     @Override
-    public void deleteTraining(Long id) {
+    @Transactional
+    public void deleteTraining(Long id, String username, String password) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
         trainingRepository.deleteById(id);
+        log.info("Training deleted Successfully");
     }
 
     @Override
+    @Transactional
     public void updateTrainingForTrainee(String username) {
-        // Find the trainee by username
         Trainee trainee = traineeRepository.findByUserUsername(username);
 
         if (trainee != null) {
-            // Update the training records associated with the trainee to set trainee_id to NULL
             List<Training> trainings = trainingRepository.findByTraineeId(trainee.getId());
             for (Training training : trainings) {
                 training.setTrainee(null);
                 trainingRepository.save(training);
+                log.info("Updated Training Successfully");
             }
         }
     }
 
     @Override
-    public List<Training> getTrainingsByTraineeUsernameAndCriteria(String username, Date fromDate, Date toDate, String trainerName, TrainingTypeValue trainingTypeName) {
-        // Find the trainee by username
+    public List<Training> getTrainingsByTraineeUsernameAndCriteria(String username, String password, Date fromDate, Date toDate, String trainerName, TrainingTypeValue trainingTypeName) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
         Trainee trainee = traineeRepository.findByUserUsername(username);
 
         Trainer trainer = trainerRepository.findByUserUsername(trainerName);
 
         TrainingType trainingTypeIs = trainingTypeRepository.findByTrainingType(trainingTypeName);
 
-
         if (trainee == null) {
-            // Trainee not found, return empty list or handle appropriately
             return List.of();
         }
 
-        // Get trainee ID
         Long traineeId = trainee.getId();
 
         Long trainerId = trainer.getId();
 
         Long trainingTypeId = trainingTypeIs.getId();
 
-        // Use trainee ID to query trainings
         return trainingRepository.findByTraineeIdAndTrainingDateBetweenAndTrainerIdAndTrainingTypeId(
                 traineeId, fromDate, toDate, trainerId, trainingTypeId);
     }
 
 
     @Override
-    public List<Training> getTrainingsByTrainerUsernameAndCriteria(String username, Date fromDate, Date toDate, String traineeName) {
+    public List<Training> getTrainingsByTrainerUsernameAndCriteria(String username, String password, Date fromDate, Date toDate, String traineeName) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
 
         Trainer trainer = trainerRepository.findByUserUsername(username);
         Trainee trainee = traineeRepository.findByUserUsername(traineeName);
-
 
         if (trainer == null) {
             return List.of();
@@ -127,10 +154,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         Long traineeId = trainee.getId();
 
-
         return trainingRepository.findByTrainerIdAndTrainingDateBetweenAndTraineeId(
                 trainerId, fromDate, toDate, traineeId);
     }
-
-
 }

@@ -9,26 +9,27 @@ import java.util.List;
 @Service
 public interface TrainerService {
 
-    Trainer getTrainerByUsername(String username);
 
-    void changeTrainerPassword(Long trainerId, String newPassword);
+    Trainer getTrainerByUsername(String username, String password);
 
-    boolean matchTrainerCredentials(String username, String password);
+    void changeTrainerPassword(Long trainerId, String username, String password, String newPassword);
 
-    List<Trainer> getAllTrainers();
-    Trainer getTrainerById(Long id);
+    List<Trainer> getAllTrainers(String username, String password);
+
+    Trainer getTrainerById(Long id, String username, String password);
+
+    Trainer updateTrainerProfile(String username, String password, String firstName,
+                                 String lastName, TrainingTypeValue trainingTypeValue);
 
 
-    Trainer updateTrainerProfile(String username, String firstName, String lastName, TrainingTypeValue trainingTypeValue);
 
     Trainer createTrainer(String firstName, String lastName, TrainingType trainingType);
 
-    void deleteTrainer(Long id);
+    void deleteTrainer(Long id, String username, String password);
 
-    // TrainerServiceImpl.java
-    void activateTrainer(Long trainerId);
+    void activateTrainer(Long trainerId, String username, String password);
 
-    void deactivateTrainer(Long trainerId);
+    void deactivateTrainer(Long trainerId, String username, String password);
 
     List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername, String password);
 }

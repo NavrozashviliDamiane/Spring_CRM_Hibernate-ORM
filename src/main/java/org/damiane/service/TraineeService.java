@@ -10,32 +10,25 @@ import java.util.List;
 
 @Service
 public interface TraineeService {
-    List<Trainee> getAllTrainees();
-    Trainee getTraineeById(Long id);
-
-    boolean matchTraineeCredentials(String username, String password);
-
-    Trainee getTraineeByUsername(String username);
 
 
+    List<Trainee> getAllTrainees(String username, String password);
 
-    Trainee updateTraineeProfile(String username, String firstName, String lastName, Date dateOfBirth, String address);
+    Trainee getTraineeById(Long id, String username, String password);
 
-    void changeTraineePassword(Long traineeId, String newPassword);
+    Trainee getTraineeByUsername(String username, String password);
+
+    Trainee updateTraineeProfile(String username, String firstName, String password, String lastName,
+                                 Date dateOfBirth, String address);
+
+    void changeTraineePassword(Long traineeId, String username, String password, String newPassword);
 
     Trainee createTrainee(String firstName, String lastName, Date dateOfBirth, String address);
 
-    void deleteTrainee(Long id);
 
+    void activateTrainee(Long traineeId, String username, String password);
 
+    void deactivateTrainee(Long traineeId, String username, String password);
 
-    void deactivateTrainee(Long traineeId);
-
-    void activateTrainee(Long traineeId);
-
-    void deleteTraineeByUsername(String username);
-
-
-    // TraineeServiceImpl.java
-
+    void deleteTraineeByUsername(String username, String password);
 }

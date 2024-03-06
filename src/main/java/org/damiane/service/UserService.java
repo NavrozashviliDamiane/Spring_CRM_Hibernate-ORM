@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public interface UserService {
-    List<User> getAllUsers();
-    User getUserById(Long id);
+
+    List<User> getAllUsers(String username, String password);
+
+    User getUserById(Long id, String username, String password);
 
     User createUser(String firstName, String lastName);
 
-    void deleteUser(Long id);
-
     User saveUser(User user);
+
+    void deleteUser(Long id, String username, String password);
 }

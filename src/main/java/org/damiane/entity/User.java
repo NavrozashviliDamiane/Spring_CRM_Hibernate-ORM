@@ -1,6 +1,5 @@
 package org.damiane.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,5 +32,4 @@ public class User {
     public void setActive(boolean isActive) {
         this.isActive = isActive;
     }
-
 }

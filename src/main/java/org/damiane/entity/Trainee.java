@@ -31,5 +31,4 @@ public class Trainee {
     private String address;
 
 
-
 }

@@ -1,18 +1,25 @@
-package org.damiane.service;
+package org.damiane.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.damiane.entity.*;
-import org.damiane.exception.UnauthorizedAccessException;
 import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
 import org.damiane.repository.TrainingTypeRepository;
+import org.damiane.service.AuthenticateService;
+import org.damiane.service.TrainerService;
+import org.damiane.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+@Slf4j
 @Service
 public class TrainerServiceImpl implements TrainerService {
 
@@ -35,88 +42,78 @@ public class TrainerServiceImpl implements TrainerService {
     private AuthenticateService authenticateService;
 
 
-
-
-
-
     @Override
-    public Trainer getTrainerByUsername(String username) {
+    public Trainer getTrainerByUsername(String username, String password ) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
         return trainerRepository.findByUserUsername(username);
     }
 
     @Override
-    public void changeTrainerPassword(Long trainerId, String newPassword) {
+    @Transactional
+    public void changeTrainerPassword(Long trainerId, String username, String password, String newPassword) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
         Optional<Trainer> trainerOptional = trainerRepository.findById(trainerId);
         trainerOptional.ifPresent(trainer -> {
             User user = trainer.getUser();
             if (user != null) {
                 user.setPassword(newPassword);
                 userService.saveUser(user);
+                log.info("Trainer Password Changed Successfully");
             }
         });
     }
 
     @Override
-    public boolean matchTrainerCredentials(String username, String password) {
-        Trainer trainer = trainerRepository.findByUserUsername(username);
-        return trainer != null && trainer.getUser().getPassword().equals(password);
-    }
+    public List<Trainer> getAllTrainers(String username, String password) {
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
 
-    @Override
-    public List<Trainer> getAllTrainers() {
         return trainerRepository.findAll();
     }
 
     @Override
-    public Trainer getTrainerById(Long id) {
+    public Trainer getTrainerById(Long id, String username, String password) {
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
+
         return trainerRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Trainer updateTrainerProfile(String username, String firstName, String lastName, TrainingTypeValue trainingTypeValue) {
-        // Retrieve the trainer entity based on the provided username
+    @Transactional
+    public Trainer updateTrainerProfile(String username, String password, String firstName,
+                                        String lastName, TrainingTypeValue trainingTypeValue) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
+
         Trainer trainer = trainerRepository.findByUserUsername(username);
 
-        // Check if the trainer exists
-        if (trainer != null) {
-            User user = trainer.getUser();
+        TrainingType trainingType = trainingTypeRepository.findByTrainingType(trainingTypeValue);
 
-            // Update the user's profile attributes if new values are provided
-            if (firstName != null) {
-                user.setFirstName(firstName);
-            }
-            if (lastName != null) {
-                user.setLastName(lastName);
-            }
+        User user = trainer.getUser();
 
-            if (trainingTypeValue != null) {
-                // Check if the training type already exists in the database
-                TrainingType trainingType = trainingTypeRepository.findByTrainingType(trainingTypeValue);
-                if (trainingType == null) {
-                    // If the training type doesn't exist, create a new one
-                    trainingType = new TrainingType(trainingTypeValue);
-                    trainingTypeRepository.save(trainingType);
-                }
-                // Set the training type for the trainer
-                trainer.setTrainingType(trainingType);
-            }
+        user.setFirstName(Objects.requireNonNullElse(firstName, user.getFirstName()));
+        user.setLastName(Objects.requireNonNullElse(lastName, user.getLastName()));
+        trainer.setTrainingType(Objects.requireNonNullElse(trainingType, trainer.getTrainingType()));
 
-            // Save the updated user entity
-            userService.saveUser(user);
+        userService.saveUser(user);
 
-            // Save the updated trainer entity
-            return trainerRepository.save(trainer);
-        } else {
-            // Handle the case where the trainer doesn't exist
-            return null;
-        }
+        log.info("Trainer Updated Successfully");
+
+        return trainerRepository.save(trainer);
+
     }
 
-
-
-
-
     @Override
+    @Transactional
     public Trainer createTrainer(String firstName, String lastName, TrainingType trainingType) {
 
         User user = userService.createUser(firstName, lastName);
@@ -126,26 +123,35 @@ public class TrainerServiceImpl implements TrainerService {
 
         TrainingType existingTrainingType = trainingTypeRepository.findByTrainingType(trainingType.getTrainingType());
         if (existingTrainingType != null) {
-            // If the training type already exists, use the existing one
             trainer.setTrainingType(existingTrainingType);
         } else {
-            // If the training type doesn't exist, save the new training type
             trainingTypeRepository.save(trainingType);
             trainer.setTrainingType(trainingType);
         }
-
+        log.info("Trainer created Successfully");
         return trainerRepository.save(trainer);
     }
 
     @Override
-    public void deleteTrainer(Long id) {
+    @Transactional
+    public void deleteTrainer(Long id, String username, String password) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
         trainerRepository.deleteById(id);
+        log.info("Trainer Deleted Successfully");
     }
 
 
-    // TrainerServiceImpl.java
     @Override
-    public void activateTrainer(Long trainerId) {
+    @Transactional
+    public void activateTrainer(Long trainerId,  String username, String password) {
+
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
+
         Trainer trainer = trainerRepository.findById(trainerId).orElse(null);
         if (trainer != null) {
             User user = trainer.getUser();
@@ -153,11 +159,16 @@ public class TrainerServiceImpl implements TrainerService {
             userService.saveUser(user);
 
             trainerRepository.save(trainer);
+            log.info("Trainer Activated Successfully");
         }
     }
 
     @Override
-    public void deactivateTrainer(Long trainerId) {
+    @Transactional
+    public void deactivateTrainer(Long trainerId, String username, String password) {
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
         Trainer trainer = trainerRepository.findById(trainerId).orElse(null);
         if (trainer != null) {
             User user = trainer.getUser();
@@ -165,14 +176,14 @@ public class TrainerServiceImpl implements TrainerService {
             userService.saveUser(user);
 
             trainerRepository.save(trainer);
+            log.info("Trainer Deactivated Successfully");
         }
     }
 
     public List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername, String password) {
 
-        if (!authenticateService.matchUserCredentials(traineeUsername, password)) {
-            throw new UnauthorizedAccessException("Trainer authentication failed");
-        }
+        authenticateService.matchUserCredentials(traineeUsername, password);
+        log.info("User Authenticated Successfully");
 
         List<Trainer> allTrainers = trainerRepository.findAll();
 
@@ -188,8 +199,8 @@ public class TrainerServiceImpl implements TrainerService {
                 .filter(trainer -> !trainersInTrainingsWithTrainee.contains(trainer))
                 .collect(Collectors.toList());
 
+        log.info("Found unassigned Trainers Successfully");
         return unassignedTrainers;
 
     }
-
 }

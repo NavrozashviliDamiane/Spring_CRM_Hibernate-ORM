@@ -8,10 +8,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.time.LocalDate;
+
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,28 +22,23 @@ public class Main {
         TrainingService trainingService = context.getBean(TrainingService.class);
         AuthenticateService authenticateService = context.getBean(AuthenticateService.class);
 
-        TrainingType trainingType = new TrainingType(TrainingTypeValue.CARDIO);
+        TrainingType trainingType = new TrainingType(TrainingTypeValue.CROSSFIT);
 
-        String traineeUsername = "Alice.Anderson";
 
-        List<Trainer> unassignedTrainers = trainerService.findUnassignedTrainersByTraineeUsername(traineeUsername);
 
-        System.out.println("Unassigned Trainers for Trainee with Username '" + traineeUsername + "':");
-        for (Trainer trainer : unassignedTrainers) {
-            System.out.println("Trainer ID: " + trainer.getId());
-        }
+        String traineeUsername = "Olivia.Harris";
 
-        String username = "Alice.Smith";
-        String password = "changedTraineePasswor";
+        String password = "Cj8Xpg3D0j";
 
-        Boolean authenticationResult = authenticateService.matchUserCredentials(username, password);
 
-        if (authenticationResult==true) {
-            System.out.println("Authentication Successfull");
-        } else {
-            System.out.println("Authentication failed");
-        }
+        Calendar dobCalendar = Calendar.getInstance();
+        dobCalendar.set(1997, Calendar.OCTOBER, 30);
+        Date dateOfBirth = dobCalendar.getTime();
 
+
+
+        traineeService.updateTraineeProfile(traineeUsername, "ChangedOlivia", password,
+                "ChangedOliviasLastname", dateOfBirth, "Tbilisi");
 
         context.close();
     }

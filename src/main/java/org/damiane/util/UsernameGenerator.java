@@ -1,12 +1,8 @@
 package org.damiane.util;
 
 import org.damiane.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Random;
 
 public class UsernameGenerator {
-
 
     private UserRepository userRepository;
 
@@ -31,4 +27,3 @@ public class UsernameGenerator {
         return userRepository.existsByUsername(username);
     }
 }
-
