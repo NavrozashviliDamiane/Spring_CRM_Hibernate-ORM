@@ -15,3 +15,7 @@ spring:
       package-to-scan: org.damiane.entity
     repositories:
       bootstrap-mode: deferred
+
+
+  profiles:
+    active: dev
