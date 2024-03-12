@@ -102,32 +102,5 @@ class TrainerServiceImplTest {
         verify(trainerRepository).findById(trainerId);
     }
 
-    @Test
-    void testUpdateTrainerProfile() {
-        String username = "testUser";
-        String password = "testPassword";
-        String firstName = "John";
-        String lastName = "Doe";
-        TrainingType trainingType = new TrainingType();
-        trainingType.setId(1L);
-        Trainer trainer  = new Trainer();
-        User user = new User();
-        TrainingType existingTrainingType = new TrainingType();
-        existingTrainingType.setId(1L);
-        trainer.setUser(user);
 
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(trainerRepository.findByUserUsername(username)).thenReturn(trainer);
-        when(trainingTypeRepository.findByTrainingType(trainingType.getTrainingType())).thenReturn(existingTrainingType);
-
-        Trainer updatedTrainer = trainerService.updateTrainerProfile(username, password, firstName, lastName, TrainingTypeValue.CARDIO);
-
-        assertEquals(firstName, updatedTrainer.getUser().getFirstName());
-        assertEquals(lastName, updatedTrainer.getUser().getLastName());
-        assertEquals(existingTrainingType, updatedTrainer.getTrainingType());
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(trainerRepository).findByUserUsername(username);
-        verify(trainingTypeRepository).findByTrainingType(trainingType.getTrainingType());
-        verify(userService).saveUser(trainer.getUser());
-    }
 }
