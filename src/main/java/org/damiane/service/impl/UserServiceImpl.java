@@ -17,11 +17,14 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final AuthenticateService authenticateService;
 
     @Autowired
-    private AuthenticateService authenticateService;
+    public UserServiceImpl(UserRepository userRepository, AuthenticateService authenticateService) {
+        this.userRepository = userRepository;
+        this.authenticateService = authenticateService;
+    }
 
     @Override
     public List<User> getAllUsers(String username, String password) {

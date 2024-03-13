@@ -20,17 +20,18 @@ import java.util.Optional;
 @Service
 public class TraineeServiceImpl implements TraineeService {
 
-    @Autowired
-    private TraineeRepository traineeRepository;
+    private final TraineeRepository traineeRepository;
+    private final UserService userService;
+    private final AuthenticateService authenticateService;
+    private final TrainingService trainingService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private AuthenticateService authenticateService;
-
-    @Autowired
-    private TrainingService trainingService;
+    public TraineeServiceImpl(TraineeRepository traineeRepository, UserService userService, AuthenticateService authenticateService, TrainingService trainingService) {
+        this.traineeRepository = traineeRepository;
+        this.userService = userService;
+        this.authenticateService = authenticateService;
+        this.trainingService = trainingService;
+    }
 
     @Override
     public List<Trainee> getAllTrainees(String username, String password) {

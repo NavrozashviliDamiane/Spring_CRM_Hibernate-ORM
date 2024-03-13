@@ -19,20 +19,20 @@ import java.util.List;
 @Service
 public class TrainingServiceImpl implements TrainingService {
 
-    @Autowired
-    private TrainingRepository trainingRepository;
+    private final TrainingRepository trainingRepository;
+    private final TraineeRepository traineeRepository;
+    private final TrainerRepository trainerRepository;
+    private final TrainingTypeRepository trainingTypeRepository;
+    private final AuthenticateService authenticateService;
 
     @Autowired
-    private TraineeRepository traineeRepository;
-
-    @Autowired
-    private TrainerRepository trainerRepository;
-
-    @Autowired
-    private TrainingTypeRepository trainingTypeRepository;
-
-    @Autowired
-    private AuthenticateService authenticateService;
+    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeRepository traineeRepository, TrainerRepository trainerRepository, TrainingTypeRepository trainingTypeRepository, AuthenticateService authenticateService) {
+        this.trainingRepository = trainingRepository;
+        this.traineeRepository = traineeRepository;
+        this.trainerRepository = trainerRepository;
+        this.trainingTypeRepository = trainingTypeRepository;
+        this.authenticateService = authenticateService;
+    }
 
     @Override
     public List<Training> getAllTrainings(String username, String password) {

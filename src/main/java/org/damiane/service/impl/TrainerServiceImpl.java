@@ -23,23 +23,22 @@ import java.util.stream.Collectors;
 @Service
 public class TrainerServiceImpl implements TrainerService {
 
-    @Autowired
-    private TrainerRepository trainerRepository;
+    private final TrainerRepository trainerRepository;
+    private final UserService userService;
+    private final TrainingTypeRepository trainingTypeRepository;
+    private final TraineeRepository traineeRepository;
+    private final TrainingRepository trainingRepository;
+    private final AuthenticateService authenticateService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TrainingTypeRepository trainingTypeRepository;
-
-    @Autowired
-    private TraineeRepository traineeRepository;
-
-    @Autowired
-    private TrainingRepository trainingRepository;
-
-    @Autowired
-    private AuthenticateService authenticateService;
+    public TrainerServiceImpl(TrainerRepository trainerRepository, UserService userService, TrainingTypeRepository trainingTypeRepository, TraineeRepository traineeRepository, TrainingRepository trainingRepository, AuthenticateService authenticateService) {
+        this.trainerRepository = trainerRepository;
+        this.userService = userService;
+        this.trainingTypeRepository = trainingTypeRepository;
+        this.traineeRepository = traineeRepository;
+        this.trainingRepository = trainingRepository;
+        this.authenticateService = authenticateService;
+    }
 
     @Override
     public Trainer getTrainerByUsername(String username, String password ) {

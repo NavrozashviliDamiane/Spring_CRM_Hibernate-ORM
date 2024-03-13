@@ -11,8 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TrainingTypeServiceImpl implements TrainingTypeService {
 
+    private final TrainingTypeRepository trainingTypeRepository;
+
     @Autowired
-    private TrainingTypeRepository trainingTypeRepository;
+    public TrainingTypeServiceImpl(TrainingTypeRepository trainingTypeRepository) {
+        this.trainingTypeRepository = trainingTypeRepository;
+    }
 
     @Override
     @Transactional
