@@ -3,8 +3,6 @@ package org.damiane.service.impl;
 import org.damiane.entity.User;
 import org.damiane.repository.UserRepository;
 import org.damiane.service.AuthenticateService;
-import org.damiane.util.PasswordGenerator;
-import org.damiane.util.UsernameGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,7 +35,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testGetAllUsers() {
+    void Given_ValidCredentials_When_GetAllUsers_Then_ReturnListOfUsers() {
         String username = "testUser";
         String password = "testPassword";
         List<User> expectedUsers = new ArrayList<>();
@@ -54,7 +52,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testGetUserById() {
+    void Given_ValidCredentials_When_GetUserById_Then_ReturnUser() {
         Long userId = 1L;
         String username = "testUser";
         String password = "testPassword";
@@ -72,7 +70,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testCreateUser() {
+    void Given_UserData_When_CreateUser_Then_ReturnCreatedUser() {
         String firstName = "John";
         String lastName = "Doe";
         User createdUser = new User();
@@ -87,7 +85,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testDeleteUser() {
+    void Given_ValidCredentials_When_DeleteUser_Then_DeleteUserById() {
         Long userId = 1L;
         String username = "testUser";
         String password = "testPassword";
@@ -101,7 +99,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testSaveUser() {
+    void Given_User_When_SaveUser_Then_SaveUserToRepository() {
         User user = new User();
 
         when(userRepository.save(user)).thenReturn(user);
@@ -112,5 +110,4 @@ class UserServiceImplTest {
 
         assertEquals(user, savedUser);
     }
-
 }

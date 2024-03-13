@@ -1,9 +1,6 @@
 package org.damiane.service.impl;
 
-
 import org.damiane.entity.Trainer;
-import org.damiane.entity.TrainingType;
-import org.damiane.entity.TrainingTypeValue;
 import org.damiane.entity.User;
 import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingTypeRepository;
@@ -15,12 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -71,8 +65,8 @@ class TrainerServiceImplTest {
 
         Trainer trainer = new Trainer();
         User user = new User();
-        user.setPassword(password); // Set the password for the user
-        trainer.setUser(user); // Set the user in the trainer object
+        user.setPassword(password);
+        trainer.setUser(user);
 
         when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
         when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
@@ -82,7 +76,7 @@ class TrainerServiceImplTest {
         assertEquals(newPassword, trainer.getUser().getPassword());
         verify(authenticateService).matchUserCredentials(username, password);
         verify(trainerRepository).findById(trainerId);
-        verify(userService).saveUser(any()); // Ensure userService.saveUser() is called
+        verify(userService).saveUser(any());
     }
 
     @Test
@@ -101,6 +95,4 @@ class TrainerServiceImplTest {
         verify(authenticateService).matchUserCredentials(username, password);
         verify(trainerRepository).findById(trainerId);
     }
-
-
 }

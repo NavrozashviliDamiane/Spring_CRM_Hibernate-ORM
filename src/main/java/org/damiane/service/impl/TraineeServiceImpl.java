@@ -120,7 +120,6 @@ public class TraineeServiceImpl implements TraineeService {
 
 
     @Override
-    @Transactional
     public void activateTrainee(Long traineeId, String username, String password) {
 
         authenticateService.matchUserCredentials(username, password);
@@ -132,13 +131,11 @@ public class TraineeServiceImpl implements TraineeService {
             user.setActive(true);
             userService.saveUser(user);
 
-            traineeRepository.save(trainee);
             log.info("Trainee activated Successfully!");
         }
     }
 
     @Override
-    @Transactional
     public void deactivateTrainee(Long traineeId, String username, String password) {
 
         authenticateService.matchUserCredentials(username, password);
@@ -150,7 +147,6 @@ public class TraineeServiceImpl implements TraineeService {
             user.setActive(false);
             userService.saveUser(user);
 
-            traineeRepository.save(trainee);
             log.info("Trainee deactivated Successfully!");
         }
     }
