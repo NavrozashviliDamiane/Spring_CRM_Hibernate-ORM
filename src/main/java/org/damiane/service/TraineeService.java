@@ -1,8 +1,6 @@
 package org.damiane.service;
 
 import org.damiane.entity.Trainee;
-import org.damiane.entity.Trainer;
-import org.damiane.entity.TrainingTypeValue;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -10,7 +8,6 @@ import java.util.List;
 
 @Service
 public interface TraineeService {
-
 
     List<Trainee> getAllTrainees(String username, String password);
 
@@ -24,7 +21,6 @@ public interface TraineeService {
     void changeTraineePassword(Long traineeId, String username, String password, String newPassword);
 
     Trainee createTrainee(String firstName, String lastName, Date dateOfBirth, String address);
-
 
     void activateTrainee(Long traineeId, String username, String password);
 

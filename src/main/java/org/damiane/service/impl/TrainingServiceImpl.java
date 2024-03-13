@@ -52,7 +52,6 @@ public class TrainingServiceImpl implements TrainingService {
         return trainingRepository.findById(id).orElse(null);
     }
 
-
     @Override
     @Transactional
     public Training createTraining(String traineeUsername, String trainerUsername, TrainingTypeValue trainingTypeValue,
@@ -61,7 +60,6 @@ public class TrainingServiceImpl implements TrainingService {
 
         authenticateService.matchUserCredentials(trainerUsername, password);
         log.info("User Authenticated Successfully");
-
 
         Trainee trainee = traineeRepository.findByUserUsername(traineeUsername);
 
@@ -80,8 +78,6 @@ public class TrainingServiceImpl implements TrainingService {
 
         log.info("Training Created Successfully");
         return trainingRepository.save(training);
-
-
     }
 
     @Override
@@ -135,7 +131,6 @@ public class TrainingServiceImpl implements TrainingService {
         return trainingRepository.findByTraineeIdAndTrainingDateBetweenAndTrainerIdAndTrainingTypeId(
                 traineeId, fromDate, toDate, trainerId, trainingTypeId);
     }
-
 
     @Override
     public List<Training> getTrainingsByTrainerUsernameAndCriteria(String username, String password, Date fromDate, Date toDate, String traineeName) {

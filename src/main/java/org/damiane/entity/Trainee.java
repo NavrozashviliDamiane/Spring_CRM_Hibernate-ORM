@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
 import java.util.Date;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -29,6 +28,4 @@ public class Trainee {
 
     @Column
     private String address;
-
-
 }

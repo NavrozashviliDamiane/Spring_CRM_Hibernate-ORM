@@ -41,7 +41,6 @@ public class TrainerServiceImpl implements TrainerService {
     @Autowired
     private AuthenticateService authenticateService;
 
-
     @Override
     public Trainer getTrainerByUsername(String username, String password ) {
 
@@ -81,7 +80,6 @@ public class TrainerServiceImpl implements TrainerService {
         authenticateService.matchUserCredentials(username, password);
         log.info("User Authenticated Successfully");
 
-
         return trainerRepository.findById(id).orElse(null);
     }
 
@@ -92,7 +90,6 @@ public class TrainerServiceImpl implements TrainerService {
 
         authenticateService.matchUserCredentials(username, password);
         log.info("User Authenticated Successfully");
-
 
         Trainer trainer = trainerRepository.findByUserUsername(username);
 
@@ -142,7 +139,6 @@ public class TrainerServiceImpl implements TrainerService {
         trainerRepository.deleteById(id);
         log.info("Trainer Deleted Successfully");
     }
-
 
     @Override
     @Transactional

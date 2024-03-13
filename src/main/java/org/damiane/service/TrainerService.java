@@ -9,7 +9,6 @@ import java.util.List;
 @Service
 public interface TrainerService {
 
-
     Trainer getTrainerByUsername(String username, String password);
 
     void changeTrainerPassword(Long trainerId, String username, String password, String newPassword);
@@ -20,7 +19,6 @@ public interface TrainerService {
 
     Trainer updateTrainerProfile(String username, String password, String firstName,
                                  String lastName, TrainingTypeValue trainingTypeValue);
-
 
 
     Trainer createTrainer(String firstName, String lastName, TrainingType trainingType);

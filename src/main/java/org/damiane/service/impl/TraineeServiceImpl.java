@@ -1,10 +1,8 @@
 package org.damiane.service.impl;
 
-import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.damiane.entity.*;
 import org.damiane.repository.TraineeRepository;
-import org.damiane.repository.UserRepository;
 import org.damiane.service.AuthenticateService;
 import org.damiane.service.TraineeService;
 import org.damiane.service.TrainingService;
@@ -32,13 +30,7 @@ public class TraineeServiceImpl implements TraineeService {
     private AuthenticateService authenticateService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private TrainingService trainingService;
-
-    @Autowired
-    private EntityManager entityManager;
 
     @Override
     public List<Trainee> getAllTrainees(String username, String password) {

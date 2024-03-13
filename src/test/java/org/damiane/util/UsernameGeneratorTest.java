@@ -1,7 +1,6 @@
 package org.damiane.util;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.damiane.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 

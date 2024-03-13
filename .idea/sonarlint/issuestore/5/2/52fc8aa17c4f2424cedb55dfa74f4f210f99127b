@@ -1,30 +1,22 @@
 
 ]
-java:S1854"@Remove this useless assignment to local variable "trainingType".(‰æÄà8¿«Àğß1
+java:S1854"@Remove this useless assignment to local variable "trainingType".(‰æÄà8¯Ê×˜ã1
 d
-java:S1854"GRemove this useless assignment to local variable "authenticateService".(‚ø¨å8¿«Àğß1
+java:S1854"GRemove this useless assignment to local variable "authenticateService".(‚ø¨å8¯Ê×˜ã1
 `
-java:S1854"CRemove this useless assignment to local variable "trainingService".(³è¨Ñ8À«Àğß1
+java:S1854"CRemove this useless assignment to local variable "trainingService".(³è¨Ñ8°Ê×˜ã1
 _
-java:S1854"BRemove this useless assignment to local variable "trainerService".(®ñÖ8À«Àğß1
+java:S1854"BRemove this useless assignment to local variable "traineeService".(áì °8ÔşÚ˜ã1
 a
-java:S1854"?Remove this useless assignment to local variable "userService".(şıìßÿÿÿÿÿ8À«Àğß1
+java:S1854"?Remove this useless assignment to local variable "userService".(şıìßÿÿÿÿÿ8°Ê×˜ã1
 R
-java:S1481"0Remove this unused "userService" local variable.(şıìßÿÿÿÿÿ8Ê«Àğß1
+java:S1481"0Remove this unused "userService" local variable.(şıìßÿÿÿÿÿ8½Ê×˜ã1
 P
-java:S1481"3Remove this unused "trainerService" local variable.(®ñÖ8Ë«Àğß1
+java:S1481"3Remove this unused "traineeService" local variable.(áì °8òşÚ˜ã1
 Q
-java:S1481"4Remove this unused "trainingService" local variable.(³è¨Ñ8Ì«Àğß1
+java:S1481"4Remove this unused "trainingService" local variable.(³è¨Ñ8¿Ê×˜ã1
 U
-java:S1481"8Remove this unused "authenticateService" local variable.(‚ø¨å8Í«Àğß1
+java:S1481"8Remove this unused "authenticateService" local variable.(‚ø¨å8ÀÊ×˜ã1
 N
-java:S1481"1Remove this unused "trainingType" local variable.(‰æÄà8Ï«Àğß1
-_
-java:S1128"BRemove this unused import 'org.damiane.repository.UserRepository'.(Ã”øÊ8áªĞûß1
-K
-java:S1128	"/Remove this unused import 'java.sql.Timestamp'.(èò½+8áªĞûß1
-T
-java:S1128
-"7Remove this unused import 'java.text.SimpleDateFormat'.(ú¡ÙÛ8âªĞûß1
-R
-java:S1128"0Remove this unused import 'java.time.LocalDate'.(›‘¬èıÿÿÿÿ8ãªĞûß1
+java:S1481"1Remove this unused "trainingType" local variable.(‰æÄà8ÃÊ×˜ã1
+G	java:S106"+Replace this use of System.out by a logger.(©çïÈ8ÁÓØ˜ã1
