@@ -129,7 +129,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    @Transactional
     public void deleteTrainer(Long id, String username, String password) {
 
         authenticateService.matchUserCredentials(username, password);
@@ -140,7 +139,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    @Transactional
     public void activateTrainer(Long trainerId,  String username, String password) {
 
         authenticateService.matchUserCredentials(username, password);
@@ -159,7 +157,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    @Transactional
     public void deactivateTrainer(Long trainerId, String username, String password) {
         authenticateService.matchUserCredentials(username, password);
         log.info("User Authenticated Successfully");
@@ -176,26 +173,16 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     public List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername, String password) {
-
         authenticateService.matchUserCredentials(traineeUsername, password);
         log.info("User Authenticated Successfully");
 
-        List<Trainer> allTrainers = trainerRepository.findAll();
-
         Trainee trainee = traineeRepository.findByUserUsername(traineeUsername);
-
         List<Training> trainingsWithTrainee = trainingRepository.findByTraineeId(trainee.getId());
 
-        List<Trainer> trainersInTrainingsWithTrainee = trainingsWithTrainee.stream()
-                .map(Training::getTrainer)
+        return trainerRepository.findAll().stream()
+                .filter(trainer -> trainingsWithTrainee.stream()
+                        .noneMatch(training -> Objects.equals(training.getTrainer(), trainer)))
                 .collect(Collectors.toList());
-
-        List<Trainer> unassignedTrainers = allTrainers.stream()
-                .filter(trainer -> !trainersInTrainingsWithTrainee.contains(trainer))
-                .collect(Collectors.toList());
-
-        log.info("Found unassigned Trainers Successfully");
-        return unassignedTrainers;
-
     }
+
 }
