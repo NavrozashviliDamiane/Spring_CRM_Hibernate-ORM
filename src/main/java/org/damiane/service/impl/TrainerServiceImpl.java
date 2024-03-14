@@ -1,6 +1,7 @@
 package org.damiane.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.damiane.dto.TrainerRegistrationRequest;
 import org.damiane.entity.*;
 import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
@@ -110,23 +111,28 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional
-    public Trainer createTrainer(String firstName, String lastName, TrainingType trainingType) {
+    public Trainer createTrainer(TrainerRegistrationRequest request) {
+        User user = userService.createUser(request.getFirstName(), request.getLastName());
 
-        User user = userService.createUser(firstName, lastName);
+        TrainingTypeValue trainingTypeValue = TrainingTypeValue.valueOf(request.getSpecialization().toUpperCase());
+        TrainingType trainingType = new TrainingType(trainingTypeValue);
+
+        // Check if trainingType already exists in the database
+        TrainingType existingTrainingType = trainingTypeRepository.findByTrainingType(trainingType.getTrainingType());
+        if (existingTrainingType != null) {
+            trainingType = existingTrainingType;
+        } else {
+            trainingType = trainingTypeRepository.save(trainingType);
+        }
 
         Trainer trainer = new Trainer();
         trainer.setUser(user);
+        trainer.setTrainingType(trainingType);
 
-        TrainingType existingTrainingType = trainingTypeRepository.findByTrainingType(trainingType.getTrainingType());
-        if (existingTrainingType != null) {
-            trainer.setTrainingType(existingTrainingType);
-        } else {
-            trainingTypeRepository.save(trainingType);
-            trainer.setTrainingType(trainingType);
-        }
         log.info("Trainer created Successfully");
         return trainerRepository.save(trainer);
     }
+
 
     @Override
     public void deleteTrainer(Long id, String username, String password) {

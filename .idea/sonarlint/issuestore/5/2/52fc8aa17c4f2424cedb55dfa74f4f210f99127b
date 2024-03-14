@@ -1,22 +1,7 @@
 
 ]
-java:S1854"@Remove this useless assignment to local variable "trainingType".(‰æÄà8Ëé»½ã1
-d
-java:S1854"GRemove this useless assignment to local variable "authenticateService".(‚ø¨å8Ğé»½ã1
-`
-java:S1854"CRemove this useless assignment to local variable "trainingService".(³è¨Ñ8Òé»½ã1
-_
-java:S1854"BRemove this useless assignment to local variable "traineeService".(áì °8Óé»½ã1
-a
-java:S1854"?Remove this useless assignment to local variable "userService".(şıìßÿÿÿÿÿ8Ôé»½ã1
-R
-java:S1481"0Remove this unused "userService" local variable.(şıìßÿÿÿÿÿ8àé»½ã1
-P
-java:S1481"3Remove this unused "traineeService" local variable.(áì °8äé»½ã1
-Q
-java:S1481"4Remove this unused "trainingService" local variable.(³è¨Ñ8èé»½ã1
-U
-java:S1481"8Remove this unused "authenticateService" local variable.(‚ø¨å8éé»½ã1
+java:S1854
+";Remove this useless assignment to local variable "context".(Ï˜šÿÿÿÿÿ8í¡Üã1
 N
-java:S1481"1Remove this unused "trainingType" local variable.(‰æÄà8íé»½ã1
-G	java:S106"+Replace this use of System.out by a logger.(©çïÈ8òé»½ã1
+java:S1481
+",Remove this unused "context" local variable.(Ï˜šÿÿÿÿÿ8ı¡Üã1

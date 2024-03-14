@@ -1,9 +1,11 @@
 package org.damiane.service;
 
+import org.damiane.dto.TrainerRegistrationRequest;
 import org.damiane.entity.Trainer;
 import org.damiane.entity.TrainingType;
 import org.damiane.entity.TrainingTypeValue;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
@@ -21,7 +23,9 @@ public interface TrainerService {
                                  String lastName, TrainingTypeValue trainingTypeValue);
 
 
-    Trainer createTrainer(String firstName, String lastName, TrainingType trainingType);
+
+    @Transactional
+    Trainer createTrainer(TrainerRegistrationRequest request);
 
     void deleteTrainer(Long id, String username, String password);
 
