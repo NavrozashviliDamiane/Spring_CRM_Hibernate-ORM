@@ -1,5 +1,6 @@
 package org.damiane.service;
 
+import org.damiane.dto.ChangePasswordRequest;
 import org.damiane.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -16,4 +17,7 @@ public interface UserService {
     User saveUser(User user);
 
     void deleteUser(Long id, String username, String password);
+
+
+    void changePassword(ChangePasswordRequest request);
 }
