@@ -1,7 +1,5 @@
 
 ‚
-java:S11921"`Define a constant instead of duplicating this literal "User Authenticated Successfully" 9 times.(”œã´ÿÿÿÿÿ8„úŸûß1
+java:S1192/"`Define a constant instead of duplicating this literal "User Authenticated Successfully" 9 times.(”œã´ÿÿÿÿÿ8„úŸûß1
 p
-java:S6204Ä"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ª™¨¹8‡Æ¹—ã1
-p
-java:S6204È"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ª™¨¹8†Ì»—ã1
+java:S6204¹"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ª™¨¹8íÁÜ½ã1

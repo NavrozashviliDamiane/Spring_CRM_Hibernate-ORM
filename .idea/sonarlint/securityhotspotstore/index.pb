@@ -85,3 +85,7 @@ r
 Bsrc/test/java/org/damiane/service/impl/TrainerServiceImplTest.java,c\8\c805e4b3d4a761bfe7c28cff1f22878afd95c0c6
 o
 ?src/test/java/org/damiane/service/impl/UserServiceImplTest.java,2\f\2fa0c882f195c4d3b45c2b4faaf009a7c3ec05bd
+c
+3src/test/java/org/damiane/config/AppConfigTest.java,5\9\59ab6cd30c65f15806381a5df23c3e8da10e4f08
+w
+Gsrc/test/java/org/damiane/service/impl/TrainingTypeServiceImplTest.java,d\4\d4e79bde2dc46c16e0d57f16f2eb4dbdb4f0f38d
