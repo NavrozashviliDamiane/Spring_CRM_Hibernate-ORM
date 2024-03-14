@@ -88,16 +88,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(ChangePasswordRequest request) {
-        // Authenticate the user
         authenticateService.matchUserCredentials(request.getUsername(), request.getOldPassword());
 
-        // Find the user by username
         User user = userRepository.findByUsername(request.getUsername());
 
-        // Set the new password
         user.setPassword(request.getNewPassword());
 
-        // Save the updated user with the new password
         userRepository.save(user);
 
         log.info("Password changed successfully for user: {}", request.getUsername());
