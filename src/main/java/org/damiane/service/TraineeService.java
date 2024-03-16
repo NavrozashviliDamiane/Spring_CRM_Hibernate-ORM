@@ -1,5 +1,6 @@
 package org.damiane.service;
 
+import org.damiane.dto.TraineeProfileDTO;
 import org.damiane.entity.Trainee;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,8 @@ import java.util.List;
 public interface TraineeService {
 
     List<Trainee> getAllTrainees(String username, String password);
+
+    TraineeProfileDTO getTraineeProfile(String username, String password);
 
     Trainee getTraineeById(Long id, String username, String password);
 

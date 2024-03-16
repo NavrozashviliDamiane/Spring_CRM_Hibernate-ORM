@@ -1,5 +1,6 @@
 package org.damiane.controller;
 
+import org.damiane.dto.TraineeProfileDTO;
 import org.damiane.dto.TraineeRegistrationDTO;
 import org.damiane.dto.UserCredentialsDTO;
 import org.damiane.entity.Trainee;
@@ -36,6 +37,15 @@ public class TraineeController {
         return new ResponseEntity<>(credentials, HttpStatus.CREATED);
     }
 
-    // Other controller methods for trainee operations
+    @GetMapping("/get-profile")
+    public ResponseEntity<?> getTraineeProfile(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password) {
 
+        TraineeProfileDTO profileDTO = traineeService.getTraineeProfile(username, password);
+        if (profileDTO == null) {
+            return new ResponseEntity<>("Trainee not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(profileDTO, HttpStatus.OK);
+    }
 }

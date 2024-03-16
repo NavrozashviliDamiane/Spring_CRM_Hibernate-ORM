@@ -1,8 +1,11 @@
 package org.damiane.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.damiane.dto.TraineeProfileDTO;
+import org.damiane.dto.TrainerDTO;
 import org.damiane.entity.*;
 import org.damiane.repository.TraineeRepository;
+import org.damiane.repository.TrainingRepository;
 import org.damiane.service.AuthenticateService;
 import org.damiane.service.TraineeService;
 import org.damiane.service.TrainingService;
@@ -15,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,12 +29,17 @@ public class TraineeServiceImpl implements TraineeService {
     private final AuthenticateService authenticateService;
     private final TrainingService trainingService;
 
+    private final TrainingRepository trainingRepository;
+
     @Autowired
-    public TraineeServiceImpl(TraineeRepository traineeRepository, UserService userService, AuthenticateService authenticateService, TrainingService trainingService) {
+    public TraineeServiceImpl(TraineeRepository traineeRepository, UserService userService,
+                              AuthenticateService authenticateService,
+                              TrainingService trainingService,TrainingRepository trainingRepository) {
         this.traineeRepository = traineeRepository;
         this.userService = userService;
         this.authenticateService = authenticateService;
         this.trainingService = trainingService;
+        this.trainingRepository = trainingRepository;
     }
 
     @Override
@@ -40,6 +49,40 @@ public class TraineeServiceImpl implements TraineeService {
         log.info("User Authenticated Successfully");
 
         return traineeRepository.findAll();
+    }
+
+
+    @Override
+    public TraineeProfileDTO getTraineeProfile(String username, String password) {
+        authenticateService.matchUserCredentials(username, password);
+        log.info("User Authenticated Successfully");
+
+        Trainee trainee = traineeRepository.findByUserUsername(username);
+
+        TraineeProfileDTO profileDTO = new TraineeProfileDTO();
+        User user = trainee.getUser();
+        profileDTO.setFirstName(user.getFirstName());
+        profileDTO.setLastName(user.getLastName());
+        profileDTO.setDateOfBirth(trainee.getDateOfBirth());
+        profileDTO.setAddress(trainee.getAddress());
+        profileDTO.setActive(user.isActive());
+
+        List<Training> trainings = trainingRepository.findByTraineeId(trainee.getId());
+        List<TrainerDTO> trainers = trainings.stream()
+                .map(training -> {
+                    TrainerDTO trainerDTO = new TrainerDTO();
+                    Trainer trainer = training.getTrainer();
+                    trainerDTO.setUsername(trainer.getUser().getUsername());
+                    trainerDTO.setFirstName(trainer.getUser().getFirstName());
+                    trainerDTO.setLastName(trainer.getUser().getLastName());
+                    trainerDTO.setSpecialization(training.getTrainingType().getTrainingType().toString());
+                    return trainerDTO;
+                })
+                .collect(Collectors.toList());
+
+        profileDTO.setTrainers(trainers);
+
+        return profileDTO;
     }
 
     @Override
