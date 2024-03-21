@@ -54,7 +54,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @Transactional
-    public Training createTraining(String traineeUsername, String trainerUsername, TrainingTypeValue trainingTypeValue,
+    public Training createTraining(String traineeUsername, String trainerUsername,
                                    String trainingName, Date trainingDate, Integer trainingDuration,
                                    String password){
 
@@ -65,13 +65,11 @@ public class TrainingServiceImpl implements TrainingService {
 
         Trainer trainer = trainerRepository.findByUserUsername(trainerUsername);
 
-        TrainingType trainingTypeIs = trainingTypeRepository.findByTrainingType(trainingTypeValue);
 
         Training training = new Training();
 
         training.setTrainee(trainee);
         training.setTrainer(trainer);
-        training.setTrainingType(trainingTypeIs);
         training.setTrainingName(trainingName);
         training.setTrainingDate(trainingDate);
         training.setTrainingDuration(trainingDuration);

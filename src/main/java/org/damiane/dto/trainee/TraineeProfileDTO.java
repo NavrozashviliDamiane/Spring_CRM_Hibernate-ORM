@@ -1,9 +1,11 @@
-package org.damiane.dto;
+package org.damiane.dto.trainee;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.damiane.dto.TrainerDTO;
+
 import java.util.Date;
 import java.util.List;
 

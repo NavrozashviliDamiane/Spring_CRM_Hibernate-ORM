@@ -5,16 +5,11 @@ spring:
     password: damiane1997
     driver-class-name: org.postgresql.Driver
   jpa:
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        show_sql: true
-        format_sql: true
-        hbm2ddl.auto: auto
-    entities:
-      package-to-scan: org.damiane.entity
-    repositories:
-      bootstrap-mode: deferred
 
 
   profiles:

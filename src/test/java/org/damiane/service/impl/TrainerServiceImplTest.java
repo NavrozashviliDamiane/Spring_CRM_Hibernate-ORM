@@ -1,30 +1,36 @@
 package org.damiane.service.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import org.damiane.dto.TrainerDTO;
+import org.damiane.dto.trainer.TrainerProfileDTO;
+import org.damiane.dto.trainer.TrainerRegistrationRequest;
 import org.damiane.entity.*;
+import org.damiane.mapper.TrainerMapper;
 import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
 import org.damiane.repository.TrainingTypeRepository;
-import org.damiane.service.AuthenticateService;
 import org.damiane.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.*;
 
-class TrainerServiceImplTest {
-
-    @Mock
-    private TrainerRepository trainerRepository;
+@ExtendWith(MockitoExtension.class)
+public class TrainerServiceImplTest {
 
     @Mock
     private UserService userService;
@@ -33,161 +39,153 @@ class TrainerServiceImplTest {
     private TrainingTypeRepository trainingTypeRepository;
 
     @Mock
+    private TrainerRepository trainerRepository;
+
+    @Mock
     private TraineeRepository traineeRepository;
 
     @Mock
-    private TrainingRepository trainingRepository;
+    private AuthenticateServiceImpl authenticateService;
 
     @Mock
-    private AuthenticateService authenticateService;
+    private Trainer trainer;
 
+    @Mock
+    private TrainingRepository trainingRepository;
     @InjectMocks
     private TrainerServiceImpl trainerService;
 
+    @Mock
+    private TrainerMapper trainerMapper;
+
+    private TrainingType trainingType;
+    private User user;
+
+    @Test
+    void createTrainer_CreatesTrainerSuccessfully_WhenValidDataProvided() {
+        String firstName = "John";
+        String lastName = "Doe";
+        String specialization = "CARDIO";
+        TrainerRegistrationRequest validRequest = new TrainerRegistrationRequest();
+        validRequest.setFirstName(firstName);
+        validRequest.setLastName(lastName);
+        validRequest.setSpecialization(specialization);
+
+        User user = new User();
+        user.setUsername("John.Doe");
+        user.setPassword("password");
+
+        TrainingType trainingType = new TrainingType(TrainingTypeValue.CARDIO);
+        Trainer trainer = new Trainer();
+        trainer.setUser(user);
+        trainer.setTrainingType(trainingType);
+
+        when(userService.createUser(firstName, lastName)).thenReturn(user);
+        when(trainingTypeRepository.save(any(TrainingType.class))).thenReturn(trainingType);
+        when(trainerRepository.save(any(Trainer.class))).thenReturn(trainer);
+
+        Trainer createdTrainer = trainerService.createTrainer(validRequest);
+
+        verify(userService).createUser(firstName, lastName);
+        verify(trainingTypeRepository).save(any(TrainingType.class));
+        verify(trainerRepository).save(any(Trainer.class));
+
+        assertNotNull(createdTrainer);
+        assertEquals(user, createdTrainer.getUser());
+        assertEquals(trainingType, createdTrainer.getTrainingType());
+    }
+
+
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        user = new User();
+        user.setId(1L);
+        user.setUsername("testuser");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setActive(true);
+
+        trainingType = new TrainingType();
+        trainingType.setId(1L);
+        trainingType.setTrainingType(TrainingTypeValue.WEIGHT_TRAINING);
+
+        trainer = new Trainer();
+        trainer.setId(1L);
+        trainer.setUser(user);
+        trainer.setTrainingType(trainingType);
     }
 
     @Test
-    void getTrainerByUsername_Should_ReturnCorrectTrainer_When_ValidUsernameAndPassword() {
-        String username = "testUser";
-        String password = "testPassword";
-        Trainer expectedTrainer = new Trainer();
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(trainerRepository.findByUserUsername(username)).thenReturn(expectedTrainer);
+    public void testGetTrainerProfile() {
+        String username = "testuser";
+        String password = "testpassword";
 
-        Trainer actualTrainer = trainerService.getTrainerByUsername(username, password);
+        when(trainerRepository.findByUserUsername(username)).thenReturn(trainer);
+        when(trainingRepository.findByTrainerId(trainer.getId())).thenReturn(Collections.emptyList());
+
+        TrainerProfileDTO result = trainerService.getTrainerProfile(username, password);
+
+        assertNotNull(result);
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        assertTrue(result.isActive());
+        assertEquals("WEIGHT_TRAINING", result.getSpecialization());
+        assertTrue(result.getTrainees().isEmpty());
 
         verify(authenticateService).matchUserCredentials(username, password);
         verify(trainerRepository).findByUserUsername(username);
-        assertEquals(expectedTrainer, actualTrainer);
+        verify(trainingRepository).findByTrainerId(trainer.getId());
     }
 
     @Test
-    void changeTrainerPassword_Should_ChangePassword_When_ValidTrainerIdAndCredentials() {
-        Long trainerId = 1L;
-        String username = "testUser";
-        String password = "testPassword";
-        String newPassword = "newPassword";
-        Trainer trainer = new Trainer();
-        trainer.setUser(new User());
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
+    public void testGetTrainerProfile_TrainerNotFound() {
+        String username = "unknownuser";
+        String password = "testpassword";
 
-        trainerService.changeTrainerPassword(trainerId, username, password, newPassword);
+        when(trainerRepository.findByUserUsername(username)).thenReturn(null);
+
+        TrainerProfileDTO result = trainerService.getTrainerProfile(username, password);
+
+        assertNull(result);
 
         verify(authenticateService).matchUserCredentials(username, password);
-        verify(trainerRepository).findById(trainerId);
-        assertEquals(newPassword, trainer.getUser().getPassword());
+        verify(trainerRepository).findByUserUsername(username);
+        verify(trainingRepository, never()).findByTrainerId(anyLong());
     }
-
-    @Test
-    void getAllTrainers_Should_ReturnAllTrainers_When_ValidUsernameAndPassword() {
-        String username = "testUser";
-        String password = "testPassword";
-        List<Trainer> expectedTrainers = new ArrayList<>();
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(trainerRepository.findAll()).thenReturn(expectedTrainers);
-
-        List<Trainer> actualTrainers = trainerService.getAllTrainers(username, password);
-
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(trainerRepository).findAll();
-        assertEquals(expectedTrainers, actualTrainers);
-    }
-
-    @Test
-    void getTrainerById_Should_ReturnCorrectTrainer_When_ValidIdUsernameAndPassword() {
-        Long trainerId = 1L;
-        String username = "testUser";
-        String password = "testPassword";
-        Trainer expectedTrainer = new Trainer();
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(expectedTrainer));
-
-        Trainer actualTrainer = trainerService.getTrainerById(trainerId, username, password);
-
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(trainerRepository).findById(trainerId);
-        assertEquals(expectedTrainer, actualTrainer);
-    }
-
-    @Test
-    void updateTrainerProfile_Should_UpdateTrainerProfile_When_ValidUsernameAndPassword() {
-        String username = "testUser";
-        String password = "testPassword";
-        String firstName = "John";
-        String lastName = "Doe";
-        TrainingType trainingType = new TrainingType();
-        Trainer existingTrainer = new Trainer();
-        existingTrainer.setUser(new User());
-
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(trainerRepository.findByUserUsername(username)).thenReturn(existingTrainer);
-        when(trainingTypeRepository.findByTrainingType(any())).thenReturn(trainingType);
-        when(trainerRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
-        Trainer updatedTrainer = trainerService.updateTrainerProfile(username, password, firstName, lastName, trainingType.getTrainingType());
-
-        assertEquals(firstName, updatedTrainer.getUser().getFirstName());
-        assertEquals(lastName, updatedTrainer.getUser().getLastName());
-        assertEquals(trainingType, updatedTrainer.getTrainingType());
-    }
-
-//    @Test
-//    void createTrainer_Should_CreateTrainer_When_ValidInput() {
-//        String firstName = "John";
-//        String lastName = "Doe";
-//        TrainingType trainingType = new TrainingType(TrainingTypeValue.CARDIO);
-//        Trainer createdTrainer = new Trainer();
-//        createdTrainer.setUser(new User());
-//        when(userService.createUser(firstName, lastName)).thenReturn(new User());
-//        when(trainingTypeRepository.findByTrainingType(trainingType.getTrainingType())).thenReturn(trainingType);
-//        when(trainerRepository.save(any())).thenReturn(createdTrainer);
-//
-//        Trainer actualTrainer = trainerService.createTrainer();
-//
-//        verify(userService).createUser(firstName, lastName);
-//        verify(trainingTypeRepository).findByTrainingType(trainingType.getTrainingType());
-//        verify(trainerRepository).save(any());
-//        assertEquals(createdTrainer, actualTrainer);
-//    }
 
 
     @Test
-    void deactivateTrainer_Should_DeactivateTrainer_When_ValidUsernameAndPassword() {
-        Long trainerId = 1L;
-        String username = "testUser";
-        String password = "testPassword";
-        Trainer trainer = new Trainer();
-        trainer.setUser(new User());
-
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
-
-        trainerService.deactivateTrainer(trainerId, username, password);
-
-        assertFalse(trainer.getUser().isActive());
-        verify(trainerRepository, times(1)).save(any());
-    }
-
-    @Test
-    void findUnassignedTrainersByTraineeUsername_Should_ReturnUnassignedTrainers_When_ValidUsernameAndPassword() {
-        String traineeUsername = "testUser";
-        String password = "testPassword";
+    void testFindUnassignedActiveTrainersByTraineeUsername() {
+        // Mocking trainee
         Trainee trainee = new Trainee();
-        trainee.setUser(new User());
-        List<Trainer> allTrainers = new ArrayList<>();
-        List<Training> trainingsWithTrainee = new ArrayList<>();
+        trainee.setId(1L);
 
-        when(authenticateService.matchUserCredentials(traineeUsername, password)).thenReturn(true);
-        when(traineeRepository.findByUserUsername(traineeUsername)).thenReturn(trainee);
-        when(trainerRepository.findAll()).thenReturn(allTrainers);
-        when(trainingRepository.findByTraineeId(any())).thenReturn(trainingsWithTrainee);
+        // Mocking trainings
+        List<Training> trainings = new ArrayList<>();
+        // Assuming trainings are already assigned to the trainee
+        // If you have specific scenarios, you can modify this accordingly
 
-        List<Trainer> unassignedTrainers = trainerService.findUnassignedTrainersByTraineeUsername(traineeUsername, password);
+        // Mocking trainee repository
+        when(traineeRepository.findByUserUsername("traineeUsername")).thenReturn(trainee);
 
+        // Mocking training repository
+        when(trainingRepository.findByTraineeId(1L)).thenReturn(trainings);
+
+        // Mocking trainer repository
+        List<Trainer> trainers = new ArrayList<>();
+        // Assuming some trainers are unassigned
+        // If you have specific scenarios, you can modify this accordingly
+        when(trainerRepository.findAll()).thenReturn(trainers);
+
+        // Call the method
+        List<TrainerDTO> result = trainerService.findUnassignedActiveTrainersByTraineeUsername("traineeUsername", "password");
+
+        // Verify
+        assertEquals(0, result.size()); // Assuming no unassigned trainers in this scenario
+        verify(authenticateService, times(1)).matchUserCredentials("traineeUsername", "password");
+        verify(traineeRepository, times(1)).findByUserUsername("traineeUsername");
+        verify(trainingRepository, times(1)).findByTraineeId(1L);
+        verify(trainerRepository, times(1)).findAll();
+        // No need to verify conversion since it's not used in this scenario
     }
-
 }

@@ -3,6 +3,7 @@ package org.damiane.service;
 import org.damiane.entity.Training;
 import org.damiane.entity.TrainingTypeValue;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,10 @@ public interface TrainingService {
 
     Training getTrainingById(Long id, String username, String password);
 
-    Training createTraining(String traineeUsername, String trainerUsername, TrainingTypeValue trainingTypeValue,
+
+
+    @Transactional
+    Training createTraining(String traineeUsername, String trainerUsername,
                             String trainingName, Date trainingDate, Integer trainingDuration,
                             String password);
 

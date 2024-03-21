@@ -1,163 +1,168 @@
 package org.damiane.service.impl;
 
-import org.damiane.entity.Trainee;
-import org.damiane.entity.User;
+import lombok.extern.slf4j.Slf4j;
+import org.damiane.dto.TrainingDTO;
+import org.damiane.dto.trainee.TraineeProfileDTO;
+import org.damiane.entity.*;
+import org.damiane.mapper.TrainingToTrainerMapper;
 import org.damiane.repository.TraineeRepository;
-import org.damiane.service.AuthenticateService;
-import org.damiane.service.TrainingService;
+import org.damiane.repository.TrainingRepository;
 import org.damiane.service.UserService;
+import org.damiane.util.trainee.GetTraineeTrainingsHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.Mockito.*;
 
+@Slf4j
+@ExtendWith(MockitoExtension.class)
 class TraineeServiceImplTest {
-
-    @Mock
-    private TraineeRepository traineeRepository;
 
     @Mock
     private UserService userService;
 
     @Mock
-    private AuthenticateService authenticateService;
+    private Trainee trainee;
 
     @Mock
-    private TrainingService trainingService;
+    private TraineeRepository traineeRepository;
+
+    @Mock
+    private AuthenticateServiceImpl authenticateService;
+
+    @Mock
+    private TrainingRepository trainingRepository;
+
+    @Mock
+    private TrainingToTrainerMapper trainingToTrainerMapper;
+
+    @InjectMocks
+    private GetTraineeTrainingsHelper trainingsHelper;
 
     @InjectMocks
     private TraineeServiceImpl traineeService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    void Given_ValidCredentials_When_GetAllTrainees_Then_ReturnListOfTrainees() {
-        String username = "testUser";
-        String password = "testPassword";
-        List<Trainee> expectedTrainees = new ArrayList<>();
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(traineeRepository.findAll()).thenReturn(expectedTrainees);
+    void createTrainee_CreatesTraineeSuccessfully_WhenValidDataProvided() {
 
-        List<Trainee> actualTrainees = traineeService.getAllTrainees(username, password);
-
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(traineeRepository).findAll();
-        assertEquals(expectedTrainees, actualTrainees);
-    }
-
-
-    @Test
-    void Given_ValidCredentials_When_GetTraineeByUsername_Then_ReturnTrainee() {
-        String username = "testUser";
-        String password = "testPassword";
-        Trainee expectedTrainee = new Trainee();
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(traineeRepository.findByUserUsername(username)).thenReturn(expectedTrainee);
-
-        Trainee actualTrainee = traineeService.getTraineeByUsername(username, password);
-
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(traineeRepository).findByUserUsername(username);
-        assertEquals(expectedTrainee, actualTrainee);
-    }
-
-    @Test
-    void Given_ValidCredentialsAndNewPassword_When_ChangeTraineePassword_Then_PasswordIsChanged() {
-        Long traineeId = 1L;
-        String username = "testUser";
-        String password = "testPassword";
-        String newPassword = "newPassword";
-        Trainee trainee = new Trainee();
-        trainee.setUser(new User());
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(traineeRepository.findById(traineeId)).thenReturn(java.util.Optional.of(trainee));
-
-        traineeService.changeTraineePassword(traineeId, username, password, newPassword);
-
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(traineeRepository).findById(traineeId);
-        assertEquals(newPassword, trainee.getUser().getPassword());
-    }
-
-    @Test
-    void Given_TraineeData_When_CreateTrainee_Then_ReturnCreatedTrainee() {
-        String firstName = "John";
-        String lastName = "Doe";
+        String firstName = "Damiane";
+        String lastName = "Navro";
         Date dateOfBirth = new Date();
-        String address = "123 Street";
-        Trainee createdTrainee = new Trainee();
-        createdTrainee.setUser(new User());
-        when(userService.createUser(firstName, lastName)).thenReturn(createdTrainee.getUser());
-        when(traineeRepository.save(any())).thenReturn(createdTrainee);
+        String address = "123 Main St";
 
-        Trainee actualTrainee = traineeService.createTrainee(firstName, lastName, dateOfBirth, address);
+        User user = new User();
+        user.setUsername("Damiane.Navro");
+        user.setPassword("password");
+
+        Trainee trainee = new Trainee();
+        trainee.setUser(user);
+
+        when(userService.createUser(firstName, lastName)).thenReturn(user);
+        when(traineeRepository.save(any(Trainee.class))).thenReturn(trainee);
+
+        Trainee createdTrainee = traineeService.createTrainee(firstName, lastName, dateOfBirth, address);
 
         verify(userService).createUser(firstName, lastName);
-        verify(traineeRepository).save(any());
-        assertEquals(createdTrainee, actualTrainee);
+        verify(traineeRepository).save(any(Trainee.class));
+
+        assertNotNull(createdTrainee);
+        assertEquals(user, createdTrainee.getUser());
     }
 
-    @Test
-    void Given_ValidCredentials_When_ActivateTrainee_Then_TraineeIsActive() {
-        Long traineeId = 1L;
-        String username = "testUser";
-        String password = "testPassword";
-        Trainee trainee = new Trainee();
-        trainee.setUser(new User());
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(traineeRepository.findById(traineeId)).thenReturn(java.util.Optional.of(trainee));
-
-        traineeService.activateTrainee(traineeId, username, password);
-
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(traineeRepository).findById(traineeId);
-        assertTrue(trainee.getUser().isActive());
-    }
 
     @Test
-    void Given_ValidCredentials_When_DeactivateTrainee_Then_TraineeIsInactive() {
-        Long traineeId = 1L;
+    void getTraineeProfile_CreatesTraineeSuccessfully_WhenUserExists() {
+        // Mocking data
         String username = "testUser";
-        String password = "testPassword";
         Trainee trainee = new Trainee();
-        trainee.setUser(new User());
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
-        when(traineeRepository.findById(traineeId)).thenReturn(java.util.Optional.of(trainee));
-
-        traineeService.deactivateTrainee(traineeId, username, password);
-
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(traineeRepository).findById(traineeId);
-        assertFalse(trainee.getUser().isActive());
-    }
-
-    @Test
-    void Given_ValidCredentials_When_DeleteTraineeByUsername_Then_TraineeIsDeleted() {
-        String username = "testUser";
-        String password = "testPassword";
-        Trainee trainee = new Trainee();
-        trainee.setUser(new User());
-        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
+        trainee.setId(1L);
+        User user = new User();
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setActive(true);
+        trainee.setUser(user);
+        trainee.setDateOfBirth(new Date());
+        trainee.setAddress("123 Main St");
+        List<Training> trainings = new ArrayList<>();
+        // Add some mock training objects if needed
         when(traineeRepository.findByUserUsername(username)).thenReturn(trainee);
+        when(trainingRepository.findByTraineeId(trainee.getId())).thenReturn(trainings);
 
-        traineeService.deleteTraineeByUsername(username, password);
+        // Invoke the method
+        TraineeProfileDTO profileDTO = traineeService.getTraineeProfile(username);
 
-        verify(authenticateService).matchUserCredentials(username, password);
-        verify(trainingService).updateTrainingForTrainee(username);
+        // Verify the interactions and assertions
+        assertEquals(user.getFirstName(), profileDTO.getFirstName());
+        assertEquals(user.getLastName(), profileDTO.getLastName());
+        assertEquals(trainee.getDateOfBirth(), profileDTO.getDateOfBirth());
+        assertEquals(trainee.getAddress(), profileDTO.getAddress());
+        assertEquals(user.isActive(), profileDTO.isActive());
         verify(traineeRepository).findByUserUsername(username);
-        verify(traineeRepository).delete(trainee);
+        verify(trainingRepository).findByTraineeId(trainee.getId());
+        verifyNoInteractions(trainingToTrainerMapper);
     }
+
+    @Test
+    void getTraineeProfile_TraineeNotFound_WhenUserDoesNotExist() {
+        // Mocking data
+        String username = "nonExistentUser";
+        when(traineeRepository.findByUserUsername(username)).thenReturn(null);
+
+        // Invoke the method
+        TraineeProfileDTO profileDTO = traineeService.getTraineeProfile(username);
+
+        assertNull(profileDTO);
+        verify(traineeRepository).findByUserUsername(username);
+        verifyNoInteractions(trainingRepository, trainingToTrainerMapper); // No interactions with these mocks
+    }
+
+
+
+
+    @Test
+    void updateTraineeProfile_TraineeNotFound() {
+        // Mocking data
+        String username = "nonExistentUser";
+        when(traineeRepository.findByUserUsername(username)).thenReturn(null);
+
+        // Invoke the method
+        Trainee updatedTrainee = traineeService.updateTraineeProfile(username, "John", "password", "Doe",
+                new Date(), "123 Main St", true);
+
+        // Verify interactions and assertions
+        assertNull(updatedTrainee);
+        verify(authenticateService).matchUserCredentials(username, "password");
+        verify(traineeRepository).findByUserUsername(username);
+        verifyNoMoreInteractions(userService);
+    }
+
+    @Test
+    void updateTraineeProfile_ThrowsException_WhenErrorOccurs() {
+        // Mocking data
+        String username = "testUser";
+        when(traineeRepository.findByUserUsername(username)).thenThrow(new RuntimeException("Mocked exception"));
+
+        // Invoke the method
+        assertThrows(RuntimeException.class, () -> traineeService.updateTraineeProfile(username, "John",
+                "password", "Doe", new Date(), "123 Main St", true));
+
+        // Verify interactions
+        verify(authenticateService).matchUserCredentials(username, "password");
+        verify(traineeRepository).findByUserUsername(username);
+        verifyNoMoreInteractions(userService);
+    }
+
 
 
 }

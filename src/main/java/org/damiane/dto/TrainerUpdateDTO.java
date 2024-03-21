@@ -2,10 +2,21 @@ package org.damiane.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 @Data
-public class TrainerRegistrationRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+public class TrainerUpdateDTO {
+
+
+    @NotNull(message = "First name is required")
+    @NotBlank(message = "First name is required")
+    private String username;
+
+    @NotNull(message = "First name is required")
+    @NotBlank(message = "First name is required")
+    private String password;
 
     @NotNull(message = "First name is required")
     @NotBlank(message = "First name is required")
@@ -17,5 +28,10 @@ public class TrainerRegistrationRequest {
 
     @NotNull(message = "First name is required")
     @NotBlank(message = "First name is required")
+    private boolean isActive;
+
+    @NotNull(message = "First name is required")
+    @NotBlank(message = "First name is required")
     private String specialization;
 }
+

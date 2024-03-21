@@ -1,8 +1,10 @@
 package org.damiane.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.damiane.dto.ChangePasswordRequest;
+import org.damiane.dto.user.ChangePasswordRequest;
 import org.damiane.entity.User;
+import org.damiane.exception.AuthenticationException;
+import org.damiane.exception.UnauthorizedAccessException;
 import org.damiane.repository.UserRepository;
 import org.damiane.service.AuthenticateService;
 import org.damiane.service.UserService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -80,6 +83,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
+    @Override
+    @Transactional
     public User saveUser(User user) {
 
         return userRepository.save(user);
@@ -87,15 +96,27 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public void changePassword(ChangePasswordRequest request) {
-        authenticateService.matchUserCredentials(request.getUsername(), request.getOldPassword());
+        String transactionId = UUID.randomUUID().toString();
+        log.info("Transaction started for trainee creation. Transaction ID: {}", transactionId);
 
-        User user = userRepository.findByUsername(request.getUsername());
+        try {
+            authenticateService.matchUserCredentials(request.getUsername(), request.getOldPassword());
 
-        user.setPassword(request.getNewPassword());
+            User user = userRepository.findByUsername(request.getUsername());
 
-        userRepository.save(user);
+            user.setPassword(request.getNewPassword());
+            log.info("Transaction finished for setting password. Transaction ID: {}", transactionId);
 
-        log.info("Password changed successfully for user: {}", request.getUsername());
+            userRepository.save(user);
+            log.info("Transaction finished for saving user. Transaction ID: {}", transactionId);
+
+            log.info("Password changed successfully for user: {}", request.getUsername());
+        } catch (Exception e) {
+            log.error("Authentication failed for user: {}", request.getUsername(), e);
+            throw e;
+        }
     }
+
 }

@@ -1,24 +1,25 @@
 package org.damiane.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.damiane.dto.TraineeProfileDTO;
+import org.damiane.dto.trainee.TraineeProfileDTO;
 import org.damiane.dto.TrainerDTO;
+import org.damiane.dto.TrainingDTO;
 import org.damiane.entity.*;
+import org.damiane.mapper.TrainingToTrainerMapper;
 import org.damiane.repository.TraineeRepository;
+import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
+import org.damiane.repository.TrainingTypeRepository;
 import org.damiane.service.AuthenticateService;
 import org.damiane.service.TraineeService;
 import org.damiane.service.TrainingService;
 import org.damiane.service.UserService;
+import org.damiane.util.trainee.GetTraineeTrainingsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -29,17 +30,33 @@ public class TraineeServiceImpl implements TraineeService {
     private final AuthenticateService authenticateService;
     private final TrainingService trainingService;
 
+    private final TrainingToTrainerMapper trainingToTrainerMapper;
+
+    private final GetTraineeTrainingsHelper getTraineeTrainingsHelper;
+
+
+    private final TrainingTypeRepository trainingTypeRepository;
+
+    private final TrainerRepository trainerRepository;
+
     private final TrainingRepository trainingRepository;
 
     @Autowired
     public TraineeServiceImpl(TraineeRepository traineeRepository, UserService userService,
                               AuthenticateService authenticateService,
-                              TrainingService trainingService,TrainingRepository trainingRepository) {
+                              TrainingService trainingService, TrainingRepository trainingRepository,
+                              TrainerRepository trainerRepository, TrainingTypeRepository trainingTypeRepository,
+                              TrainingToTrainerMapper trainingToTrainerMapper,  GetTraineeTrainingsHelper getTraineeTrainingsHelper
+    ) {
         this.traineeRepository = traineeRepository;
         this.userService = userService;
         this.authenticateService = authenticateService;
         this.trainingService = trainingService;
         this.trainingRepository = trainingRepository;
+        this.trainerRepository = trainerRepository;
+        this.trainingTypeRepository = trainingTypeRepository;
+        this.trainingToTrainerMapper = trainingToTrainerMapper;
+        this.getTraineeTrainingsHelper = getTraineeTrainingsHelper;
     }
 
     @Override
@@ -53,36 +70,37 @@ public class TraineeServiceImpl implements TraineeService {
 
 
     @Override
-    public TraineeProfileDTO getTraineeProfile(String username, String password) {
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
+    public TraineeProfileDTO getTraineeProfile(String username) {
+        log.info("Fetching trainee profile for username: {}", username);
+        try {
+            Trainee trainee = traineeRepository.findByUserUsername(username);
+            if (trainee == null) {
+                log.info("Trainee not found for username: {}", username);
+                return null;
+            }
 
-        Trainee trainee = traineeRepository.findByUserUsername(username);
+            User user = trainee.getUser();
 
-        TraineeProfileDTO profileDTO = new TraineeProfileDTO();
-        User user = trainee.getUser();
-        profileDTO.setFirstName(user.getFirstName());
-        profileDTO.setLastName(user.getLastName());
-        profileDTO.setDateOfBirth(trainee.getDateOfBirth());
-        profileDTO.setAddress(trainee.getAddress());
-        profileDTO.setActive(user.isActive());
+            TraineeProfileDTO profileDTO = new TraineeProfileDTO();
+            profileDTO.setFirstName(user.getFirstName());
+            profileDTO.setLastName(user.getLastName());
+            profileDTO.setDateOfBirth(trainee.getDateOfBirth());
+            profileDTO.setAddress(trainee.getAddress());
+            profileDTO.setActive(user.isActive());
 
-        List<Training> trainings = trainingRepository.findByTraineeId(trainee.getId());
-        List<TrainerDTO> trainers = trainings.stream()
-                .map(training -> {
-                    TrainerDTO trainerDTO = new TrainerDTO();
-                    Trainer trainer = training.getTrainer();
-                    trainerDTO.setUsername(trainer.getUser().getUsername());
-                    trainerDTO.setFirstName(trainer.getUser().getFirstName());
-                    trainerDTO.setLastName(trainer.getUser().getLastName());
-                    trainerDTO.setSpecialization(training.getTrainingType().getTrainingType().toString());
-                    return trainerDTO;
-                })
-                .collect(Collectors.toList());
+            List<Training> trainings = trainingRepository.findByTraineeId(trainee.getId());
+            List<TrainerDTO> trainers = trainings.stream()
+                    .map(trainingToTrainerMapper::mapTrainingToTrainerDTO)
+                    .toList();
 
-        profileDTO.setTrainers(trainers);
+            profileDTO.setTrainers(trainers);
 
-        return profileDTO;
+            log.info("Trainee profile fetched successfully for username: {}", username);
+            return profileDTO;
+        } catch (Exception ex) {
+            log.error("Error occurred while fetching trainee profile for username: {}", username, ex);
+            throw ex;
+        }
     }
 
     @Override
@@ -102,31 +120,43 @@ public class TraineeServiceImpl implements TraineeService {
         return traineeRepository.findByUserUsername(username);
     }
 
+
     @Override
     @Transactional
     public Trainee updateTraineeProfile(String username, String firstName, String password, String lastName,
-                                        Date dateOfBirth, String address) {
+                                        Date dateOfBirth, String address, boolean isActive) {
 
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
+        String transactionId = UUID.randomUUID().toString();
+        log.info("Transaction started for trainee update. Transaction ID: {}", transactionId);
 
-        Trainee trainee = traineeRepository.findByUserUsername(username);
+        try {
+
+            authenticateService.matchUserCredentials(username, password);
+            Trainee trainee = traineeRepository.findByUserUsername(username);
+
+            if (trainee != null) {
+                User user = trainee.getUser();
+                user.setFirstName(firstName != null ? firstName : user.getFirstName());
+                user.setLastName(lastName != null ? lastName : user.getLastName());
+                trainee.setDateOfBirth(dateOfBirth != null ? dateOfBirth : trainee.getDateOfBirth());
+                trainee.setAddress(address != null ? address : trainee.getAddress());
+                user.setActive(isActive);
+                userService.saveUser(user);
+                log.info("Transaction successful for trainee update. Transaction ID: {}", transactionId);
+
+                return traineeRepository.save(trainee);
 
 
-        User user = trainee.getUser();
+            } else {
+                return null;
+            }
 
-        user.setFirstName(Objects.requireNonNullElse(firstName, user.getFirstName()));
-        user.setLastName(Objects.requireNonNullElse(lastName, user.getLastName()));
-        trainee.setDateOfBirth(Objects.requireNonNullElse(dateOfBirth, trainee.getDateOfBirth()));
-        trainee.setAddress(Objects.requireNonNullElse(address, trainee.getAddress()));
-
-        userService.saveUser(user);
-
-        log.info("Trainee Profile Updated Successfully");
-        return traineeRepository.save(trainee);
-
-
+        } catch (Exception e) {
+            log.info("Error occurred while updating trainee. Transaction ID: {}", transactionId, e);
+            throw e;
+        }
     }
+
 
     @Override
     @Transactional
@@ -150,63 +180,110 @@ public class TraineeServiceImpl implements TraineeService {
     @Transactional
     public Trainee createTrainee(String firstName, String lastName, Date dateOfBirth, String address) {
 
-        User user = userService.createUser(firstName, lastName);
+        String transactionId = UUID.randomUUID().toString();
+        log.info("Transaction started for trainee creation. Transaction ID: {}", transactionId);
 
-        Trainee trainee = new Trainee();
-        trainee.setUser(user);
-        trainee.setDateOfBirth(dateOfBirth);
-        trainee.setAddress(address);
+        try {
+            User user = userService.createUser(firstName, lastName);
 
-        log.info("Trainee Created Successfully");
-        return traineeRepository.save(trainee);
-    }
+            Trainee trainee = new Trainee();
+            trainee.setUser(user);
+            trainee.setDateOfBirth(dateOfBirth);
+            trainee.setAddress(address);
 
+            log.info("Trainee Created Successfully");
+            Trainee createdTrainee = traineeRepository.save(trainee);
 
-    @Override
-    public void activateTrainee(Long traineeId, String username, String password) {
-
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        Trainee trainee = traineeRepository.findById(traineeId).orElse(null);
-        if (trainee != null) {
-            User user = trainee.getUser();
-            user.setActive(true);
-            userService.saveUser(user);
-
-            log.info("Trainee activated Successfully!");
+            log.info("Trainee created successfully. Transaction ID: {}", transactionId);
+            return createdTrainee;
+        } catch (Exception e) {
+            log.info("Error occurred while creating trainee. Transaction ID: {}", transactionId, e);
+            throw e;
         }
     }
 
+
     @Override
-    public void deactivateTrainee(Long traineeId, String username, String password) {
-
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        Trainee trainee = traineeRepository.findById(traineeId).orElse(null);
+    public void activateTrainee(String username, boolean isActive) {
+        Trainee trainee = traineeRepository.findByUserUsername(username);
         if (trainee != null) {
             User user = trainee.getUser();
-            user.setActive(false);
+            user.setActive(isActive);
             userService.saveUser(user);
-
-            log.info("Trainee deactivated Successfully!");
+            log.info("Trainee activated Successfully!");
+        } else {
+            log.error("Trainee not found with username: " + username);
         }
     }
 
     @Override
     @Transactional
-    public void deleteTraineeByUsername(String username, String password) {
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
+    public void updateTraineeStatus(String username, boolean isActive) {
+        Trainee trainee = traineeRepository.findByUserUsername(username);
+        if (trainee != null) {
+            User user = trainee.getUser();
+            user.setActive(isActive);
+            userService.saveUser(user);
+            log.info("Trainee status updated Successfully!");
+        } else {
+            log.error("Trainee not found with username: " + username);
+        }
+    }
 
-        trainingService.updateTrainingForTrainee(username);
+    @Override
+    public void deactivateTrainee(String username, boolean isActive) {
+        Trainee trainee = traineeRepository.findByUserUsername(username);
+        if (trainee != null) {
+            User user = trainee.getUser();
+            user.setActive(isActive);
+            userService.saveUser(user);
+            log.info("Trainee deactivated Successfully!");
+        } else {
+            log.error("Trainee not found with username: " + username);
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteTraineeByUsername(String username) {
+
+        String transactionId = UUID.randomUUID().toString();
+        log.info("Transaction started for trainee delete. Transaction ID: {}", transactionId);
 
         Trainee trainee = traineeRepository.findByUserUsername(username);
 
-        if (trainee != null) {
-            traineeRepository.delete(trainee);
-            log.info("Trainee deleted Successfully");
-        }
+        List<Training> trainings = trainingRepository.findByTraineeId(trainee.getId());
+        trainingRepository.deleteAll(trainings);
+        log.info("Transaction successful of deleting trainee's associate training. Transaction ID: {}", transactionId);
+
+        userService.deleteUserById(trainee.getUser().getId());
+        log.info("Transaction successful of deleting trainee's associate user. Transaction ID: {}", transactionId);
+        traineeRepository.delete(trainee);
+        log.info("Transaction successful of deleting trainee. Transaction ID: {}", transactionId);
+
+        log.info("Trainee, associated trainings, and user deleted successfully");
     }
+
+    @Override
+    public List<TrainingDTO> getTraineeTrainingsList(String username, String password, Date fromDate, Date toDate,
+                                                     String trainerName, String trainingTypeName) {
+
+        authenticateService.matchUserCredentials(username, password);
+
+        Trainee trainee = traineeRepository.findByUserUsername(username);
+        if (trainee == null) {
+            log.error("Trainee not found!");
+            return Collections.emptyList();
+        }
+
+        Long traineeId = trainee.getId();
+        Long trainerId = getTraineeTrainingsHelper.getTrainerId(trainerName);
+        Long trainingTypeId = getTraineeTrainingsHelper.getTrainingTypeId(trainingTypeName);
+
+        List<Training> trainings = getTraineeTrainingsHelper.constructQuery(traineeId, fromDate, toDate, trainerId, trainingTypeId);
+
+        return getTraineeTrainingsHelper.mapToTrainingDTO(trainings);
+    }
+
 }

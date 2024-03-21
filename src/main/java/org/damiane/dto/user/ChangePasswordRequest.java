@@ -1,4 +1,4 @@
-package org.damiane.dto;
+package org.damiane.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -3,11 +3,13 @@ package org.damiane.entity;
 import java.util.Date;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Component
 @Table(name = "trainings")
 public class Training {
 

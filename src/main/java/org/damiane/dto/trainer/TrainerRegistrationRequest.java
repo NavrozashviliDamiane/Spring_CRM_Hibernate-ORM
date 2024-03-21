@@ -1,15 +1,11 @@
-package org.damiane.dto;
+package org.damiane.dto.trainer;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
-@NoArgsConstructor
-public class TraineeRegistrationDTO {
+public class TrainerRegistrationRequest {
 
     @NotNull(message = "First name is required")
     @NotBlank(message = "First name is required")
@@ -19,7 +15,7 @@ public class TraineeRegistrationDTO {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    private Date dateOfBirth;
-
-    private String address;
+    @NotNull(message = "Specialization name is required")
+    @NotBlank(message = "Specialization is required")
+    private String specialization;
 }

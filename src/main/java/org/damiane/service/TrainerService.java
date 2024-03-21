@@ -1,9 +1,9 @@
 package org.damiane.service;
 
-import org.damiane.dto.TrainerRegistrationRequest;
+import org.damiane.dto.*;
+import org.damiane.dto.trainer.TrainerProfileDTO;
+import org.damiane.dto.trainer.TrainerRegistrationRequest;
 import org.damiane.entity.Trainer;
-import org.damiane.entity.TrainingType;
-import org.damiane.entity.TrainingTypeValue;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +17,11 @@ public interface TrainerService {
 
     List<Trainer> getAllTrainers(String username, String password);
 
+    TrainerProfileDTO getTrainerProfile(String username, String password);
+
     Trainer getTrainerById(Long id, String username, String password);
 
-    Trainer updateTrainerProfile(String username, String password, String firstName,
-                                 String lastName, TrainingTypeValue trainingTypeValue);
+
 
 
 
@@ -33,5 +34,15 @@ public interface TrainerService {
 
     void deactivateTrainer(Long trainerId, String username, String password);
 
-    List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername, String password);
+
+    @Transactional
+    void updateTrainerStatus(String username, boolean isActive);
+
+    List<TrainerDTO> findUnassignedActiveTrainersByTraineeUsername(String traineeUsername, String password);
+
+    @Transactional
+    TrainerProfileDTO updateTrainerProfile(TrainerUpdateDTO trainerUpdateDTO);
+
+    @Transactional(readOnly = true)
+    List<TrainerTrainingResponseDTO> getTrainerTrainings(TrainerTrainingsRequestDTO request);
 }

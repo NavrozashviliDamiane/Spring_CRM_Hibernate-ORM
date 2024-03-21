@@ -1,5 +1,11 @@
 
 ‚
-java:S11921"`Define a constant instead of duplicating this literal "User Authenticated Successfully" 9 times.(”œã´ÿÿÿÿÿ8ËÍàˆä1
-o
-java:S6204Q"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ª™¨¹8•õ‹ä1
+java:S1192?"`Define a constant instead of duplicating this literal "User Authenticated Successfully" 4 times.(”œã´ÿÿÿÿÿ8¸øŞå1
+€
+java:S1192î"bDefine a constant instead of duplicating this literal "Trainee not found with username: " 3 times.(Ï¬ô›8Ÿ¸øŞå1
+]	java:S125{"<This block of commented-out lines of code should be removed.(‹ÄÔÙşÿÿÿÿ8—¹øŞå1
+Y	java:S125’"<This block of commented-out lines of code should be removed.(ËÙ¤‘8·¹øŞå1
+p
+java:S6204€"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ª™¨¹8éÒøŞå1
+U
+java:S1068"3Remove this unused "trainingService" private field.(ÍÒ…ÿÿÿÿÿÿ8ƒ»øŞå1
