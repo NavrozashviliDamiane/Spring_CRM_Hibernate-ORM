@@ -3,16 +3,10 @@ package org.damiane.controller;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
-
-import org.damiane.dto.trainer.TrainerDTO;
-import org.damiane.dto.trainer.TrainerProfileDTO;
-import org.damiane.dto.trainer.TrainerRegistrationRequest;
-import org.damiane.dto.trainer.TrainerRegistrationResponse;
+import org.damiane.dto.trainee.TraineeDTO;
+import org.damiane.dto.trainer.*;
 import org.damiane.entity.Trainer;
-import org.damiane.entity.TrainingType;
 import org.damiane.entity.User;
-import org.damiane.repository.TrainerRepository;
-import org.damiane.repository.TrainingRepository;
 import org.damiane.service.TrainerService;
 import org.damiane.service.impl.AuthenticateServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -24,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,22 +28,10 @@ public class TrainerControllerTest {
     private TrainerService trainerService;
 
     @Mock
-    private TrainerRepository trainerRepository;
-
-    @Mock
     private AuthenticateServiceImpl authenticateService;
-
-    @Mock
-    private Trainer trainer;
-
-    @Mock
-    private TrainingRepository trainingRepository;
 
     @InjectMocks
     private TrainerController trainerController;
-
-    private TrainingType trainingType;
-    private User user;
 
     @Test
     void registerTrainer_ReturnsCreatedResponse_WhenTrainerCreatedSuccessfully() {
@@ -87,7 +70,6 @@ public class TrainerControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertNull(responseEntity.getBody());
     }
-
 
     @Test
     public void testGetTrainerProfile_Success() {
@@ -145,44 +127,137 @@ public class TrainerControllerTest {
 
     @Test
     void testGetUnassignedActiveTrainersByTraineeUsername_Success() {
-        // Mocking authenticateService
         when(authenticateService.matchUserCredentials("traineeUsername", "password")).thenReturn(true);
 
-        // Mocking trainerService
         List<TrainerDTO> trainers = new ArrayList<>();
-        // Add some mock data if needed
         when(trainerService.findUnassignedActiveTrainersByTraineeUsername("traineeUsername", "password")).thenReturn(trainers);
 
-        // Call the method
         ResponseEntity<List<TrainerDTO>> responseEntity = trainerController.getUnassignedActiveTrainersByTraineeUsername("traineeUsername", "password");
 
-        // Verify
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(trainers, responseEntity.getBody());
 
-        // Verify interactions
         verify(authenticateService, times(1)).matchUserCredentials("traineeUsername", "password");
         verify(trainerService, times(1)).findUnassignedActiveTrainersByTraineeUsername("traineeUsername", "password");
     }
 
     @Test
     void testGetUnassignedActiveTrainersByTraineeUsername_Unauthorized() {
-        // Mocking authenticateService to return false, indicating invalid credentials
         when(authenticateService.matchUserCredentials("invalidUsername", "invalidPassword")).thenReturn(false);
 
-        // Call the method with invalid credentials
         ResponseEntity<List<TrainerDTO>> responseEntity = trainerController.getUnassignedActiveTrainersByTraineeUsername("invalidUsername", "invalidPassword");
 
-        // Verify
         assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
         assertEquals("Invalid username or password", responseEntity.getBody());
 
-        // Verify interactions
         verify(authenticateService, times(1)).matchUserCredentials("invalidUsername", "invalidPassword");
-        // Ensure trainerService is not invoked
         verifyNoInteractions(trainerService);
     }
 
+    @Test
+    public void updateTrainerStatus_Success_ReturnsOk() {
+        String username = "test";
+        boolean isActive = true;
+
+        ResponseEntity<String> response = trainerController.updateTrainerStatus(username, isActive);
+
+        verify(trainerService).updateTrainerStatus(username, isActive);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Trainer status updated successfully!", response.getBody());
+    }
 
 
+    @Test
+    public void updateTrainerProfile_Success_ReturnsOk() {
+        TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO(
+                "trainer_username", // username
+                "trainer_password", // password
+                "John", // firstName
+                "Doe", // lastName
+                true, // isActive
+                "Java Programming" // specialization
+        );
+
+        TrainerProfileDTO updatedProfile = new TrainerProfileDTO(
+                "John", // firstName
+                "Doe", // lastName
+                "Java Programming", // specialization
+                true, // isActive
+                List.of( // List of TraineeDTOs (sample data)
+                        new TraineeDTO("trainee1", "Alice", "password"),
+                        new TraineeDTO("trainee2", "Bob", "password")
+                )
+        );
+
+        when(trainerService.updateTrainerProfile(trainerUpdateDTO)).thenReturn(updatedProfile);
+
+        ResponseEntity<?> response = trainerController.updateTrainerProfile(trainerUpdateDTO);
+
+        verify(trainerService).updateTrainerProfile(trainerUpdateDTO);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedProfile, response.getBody());
+    }
+
+    @Test
+    public void updateTrainerProfile_TrainerNotFound_ReturnsNotFound() {
+        TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO(
+                "trainer_username",
+                "trainer_password",
+                "John",
+                "Doe",
+                true,
+                "Java Programming"
+        );
+
+        when(trainerService.updateTrainerProfile(trainerUpdateDTO)).thenReturn(null);
+
+        ResponseEntity<?> response = trainerController.updateTrainerProfile(trainerUpdateDTO);
+
+        verify(trainerService).updateTrainerProfile(trainerUpdateDTO);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Trainer not found", response.getBody());
+    }
+
+
+    @Test
+    void getTrainerTrainings_ReturnsTrainings() {
+        // Given
+        String username = "test";
+        String password = "password";
+        Date periodFrom = new Date();
+        Date periodTo = new Date();
+        String traineeName = "trainee";
+
+        when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
+
+        List<TrainerTrainingResponseDTO> mockTrainingResponses = new ArrayList<>();
+
+        when(trainerService.getTrainerTrainings(any())).thenReturn(mockTrainingResponses);
+
+        ResponseEntity<List<TrainerTrainingResponseDTO>> response = trainerController.getTrainerTrainings(username, password, periodFrom, periodTo, traineeName);
+
+        verify(authenticateService).matchUserCredentials(username, password);
+        verify(trainerService).getTrainerTrainings(any());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockTrainingResponses, response.getBody());
+    }
+
+    @Test
+    void getTrainerTrainings_AuthenticationFailed_ReturnsUnauthorized() {
+        String username = "test";
+        String password = "password";
+        Date periodFrom = new Date();
+        Date periodTo = new Date();
+        String traineeName = "trainee";
+
+        when(authenticateService.matchUserCredentials(username, password)).thenReturn(false);
+
+        ResponseEntity<?> response = trainerController.getTrainerTrainings(username, password, periodFrom, periodTo, traineeName);
+
+        verify(authenticateService).matchUserCredentials(username, password);
+        verify(trainerService, never()).getTrainerTrainings(any());
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNotNull(response.getBody()); // Ensure the body is not null
+        assertEquals("Invalid username or password", response.getBody());
+    }
 }
