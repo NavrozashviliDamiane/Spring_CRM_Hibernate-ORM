@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
-import org.damiane.dto.TrainerDTO;
+import org.damiane.dto.trainer.TrainerDTO;
 import org.damiane.dto.trainer.TrainerProfileDTO;
 import org.damiane.dto.trainer.TrainerRegistrationRequest;
 import org.damiane.dto.trainer.TrainerRegistrationResponse;

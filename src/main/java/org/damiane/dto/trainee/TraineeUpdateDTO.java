@@ -1,26 +1,31 @@
 package org.damiane.dto.trainee;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.damiane.dto.trainer.TrainerDTO;
 
 import java.util.Date;
-import java.util.List;
+
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class TraineeProfileDTO {
+@NoArgsConstructor
+public class TraineeUpdateDTO {
+
+    @NotEmpty(message = "First name is required")
     private String firstName;
+
+    @NotEmpty(message = "Last name is required")
     private String lastName;
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date dateOfBirth;
 
     private String address;
+
+    @NotNull(message = "Active status is required")
     private boolean active;
-    private List<TrainerDTO> trainers;
 
 }
+

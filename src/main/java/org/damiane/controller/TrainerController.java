@@ -1,10 +1,7 @@
 package org.damiane.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.damiane.dto.*;
-import org.damiane.dto.trainer.TrainerProfileDTO;
-import org.damiane.dto.trainer.TrainerRegistrationRequest;
-import org.damiane.dto.trainer.TrainerRegistrationResponse;
+import org.damiane.dto.trainer.*;
 import org.damiane.entity.Trainer;
 import org.damiane.service.AuthenticateService;
 import org.damiane.service.TrainerService;

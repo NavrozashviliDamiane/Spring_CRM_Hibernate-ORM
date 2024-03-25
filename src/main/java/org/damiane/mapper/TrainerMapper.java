@@ -1,6 +1,6 @@
 package org.damiane.mapper;
 
-import org.damiane.dto.TrainerDTO;
+import org.damiane.dto.trainer.TrainerDTO;
 import org.damiane.entity.Trainer;
 import org.springframework.stereotype.Component;
 

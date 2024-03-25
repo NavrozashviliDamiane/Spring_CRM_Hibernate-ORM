@@ -1,6 +1,6 @@
 package org.damiane.controller;
 
-import org.damiane.dto.TrainingTypeDTO;
+import org.damiane.dto.training.TrainingTypeDTO;
 import org.damiane.entity.TrainingType;
 import org.damiane.service.TrainingTypeService;
 import org.springframework.beans.factory.annotation.Autowired;

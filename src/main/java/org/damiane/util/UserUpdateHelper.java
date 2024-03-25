@@ -1,6 +1,6 @@
 package org.damiane.util;
 
-import org.damiane.dto.TrainerUpdateDTO;
+import org.damiane.dto.trainer.TrainerUpdateDTO;
 import org.damiane.entity.User;
 import org.damiane.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

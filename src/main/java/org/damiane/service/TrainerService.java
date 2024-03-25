@@ -1,8 +1,6 @@
 package org.damiane.service;
 
-import org.damiane.dto.*;
-import org.damiane.dto.trainer.TrainerProfileDTO;
-import org.damiane.dto.trainer.TrainerRegistrationRequest;
+import org.damiane.dto.trainer.*;
 import org.damiane.entity.Trainer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

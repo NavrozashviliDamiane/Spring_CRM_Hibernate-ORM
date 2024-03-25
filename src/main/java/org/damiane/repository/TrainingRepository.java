@@ -30,4 +30,8 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
     List<Training> findByTrainerUserUsernameAndTrainingDateBetween(String username, Date periodFrom, Date periodTo);
 
     List<Training> findByTrainerUserUsername(String username);
+
+    List<Training> findByTrainerUserUsernameAndTrainingDateBetweenAndTraineeUserFirstNameContainingIgnoreCase(String username, Date periodFrom, Date periodTo, String traineeName);
+
+    List<Training> findByTrainerUserUsernameAndTraineeUserFirstNameContainingIgnoreCase(String username, String traineeName);
 }

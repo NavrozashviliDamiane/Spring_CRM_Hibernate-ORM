@@ -2,8 +2,9 @@ package org.damiane.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.damiane.dto.trainee.TraineeProfileDTO;
-import org.damiane.dto.TrainerDTO;
-import org.damiane.dto.TrainingDTO;
+import org.damiane.dto.trainer.TrainerDTO;
+import org.damiane.dto.trainer.TrainerResponse;
+import org.damiane.dto.training.TrainingDTO;
 import org.damiane.entity.*;
 import org.damiane.mapper.TrainingToTrainerMapper;
 import org.damiane.repository.TraineeRepository;
@@ -284,6 +285,73 @@ public class TraineeServiceImpl implements TraineeService {
         List<Training> trainings = getTraineeTrainingsHelper.constructQuery(traineeId, fromDate, toDate, trainerId, trainingTypeId);
 
         return getTraineeTrainingsHelper.mapToTrainingDTO(trainings);
+    }
+
+
+
+    @Override
+    public List<TrainerResponse> updateTraineeTrainerList(String traineeUsername, List<String> trainerUsernames) {
+
+        log.info("Updating trainee's trainer list for trainee: {}", traineeUsername);
+
+        // Step 1: Find Trainee by Username
+        Trainee trainee = traineeRepository.findByUserUsername(traineeUsername);
+
+        if (trainee == null) {
+            log.info("Trainee not found with username: {}", traineeUsername);
+
+            // Handle Trainee not found scenario
+            return null;
+        }
+
+        Long traineeId = trainee.getId();
+        log.info("Trainee found with ID: {}", traineeId);
+
+        // Step 2: Find Trainings Associated with Trainee
+        List<Training> trainings = trainingRepository.findByTraineeId(traineeId);
+        log.info("Found {} trainings associated with trainee", trainings.size());
+
+
+        // Step 3 & 4: Find Trainer by Username and Specialization, Update Training with New Trainer
+        for (String trainerUsername : trainerUsernames) {
+            Trainer trainer = trainerRepository.findByUserUsername(trainerUsername);
+            if (trainer != null) {
+                log.info("Trainer found with username: {}", trainerUsername);
+                Long trainerTrainingTypeId = trainer.getTrainingType().getId(); // Get the ID of the Trainer's training type
+
+                for (Training training : trainings) {
+                    Long trainingTrainingTypeId = training.getTrainingType().getId(); // Get the ID of the Training's training type
+                    // Check if the training type IDs match
+                    if (trainingTrainingTypeId.equals(trainerTrainingTypeId)) {
+                        // Update the Training entity with the new Trainer's ID
+                        training.setTrainer(trainer);
+                        trainingRepository.save(training);
+                        log.info("Training updated with new trainer: {}", trainer.getUser());
+                    }
+                }
+            }
+        }
+
+
+        // Step 5: Retrieve Updated Trainer List for Trainee
+        List<TrainerResponse> updatedTrainers = new ArrayList<>();
+        for (Training training : trainings) {
+            Trainer trainer = trainerRepository.findById(training.getTrainer().getId()).orElse(null);
+            if (trainer != null) {
+                // Create TrainerResponse object with required details
+                TrainerResponse trainerResponse = new TrainerResponse();
+                trainerResponse.setUsername(trainer.getUser().getUsername());
+                trainerResponse.setFirstName(trainer.getUser().getFirstName());
+                trainerResponse.setLastName(trainer.getUser().getLastName());
+                trainerResponse.setSpecialization(training.getTrainingType().getTrainingType().toString());
+                updatedTrainers.add(trainerResponse);
+            }
+        }
+
+        log.info("Updated trainer list retrieved for trainee: {}", traineeUsername);
+
+
+        return updatedTrainers;
     }
 
 }

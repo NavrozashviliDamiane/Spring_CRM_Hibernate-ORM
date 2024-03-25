@@ -2,7 +2,7 @@ package org.damiane.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.damiane.dto.TrainingRequest;
+import org.damiane.dto.training.TrainingRequest;
 import org.damiane.service.TrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 
 
-java:S1192V"]Define a constant instead of duplicating this literal "Invalid username or password" 4 times.(Õ¡ŠÕşÿÿÿÿ8‰«óŞå1
+java:S1192W"]Define a constant instead of duplicating this literal "Invalid username or password" 4 times.(Õ¡ŠÕşÿÿÿÿ8´©ñüå1
 H
-java:S1452I"&Remove usage of generic wildcard type.(Î©Ò•üÿÿÿÿ8Ë«óŞå1
+java:S1452J"&Remove usage of generic wildcard type.(Î©Ò•üÿÿÿÿ8‰ªñüå1
 B
-java:S1452d"&Remove usage of generic wildcard type.(Ô¢µ8Ñ«óŞå1
+java:S1452e"&Remove usage of generic wildcard type.(Ô¢µ8“ªñüå1

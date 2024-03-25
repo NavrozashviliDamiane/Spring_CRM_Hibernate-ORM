@@ -1,9 +1,8 @@
 package org.damiane.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.damiane.dto.*;
-import org.damiane.dto.trainer.TrainerProfileDTO;
-import org.damiane.dto.trainer.TrainerRegistrationRequest;
+import org.damiane.dto.trainee.TraineeDTO;
+import org.damiane.dto.trainer.*;
 import org.damiane.entity.*;
 import org.damiane.repository.*;
 import org.damiane.service.AuthenticateService;
@@ -293,15 +292,14 @@ public class TrainerServiceImpl implements TrainerService {
     public List<TrainerTrainingResponseDTO> getTrainerTrainings(TrainerTrainingsRequestDTO request) {
         List<Training> trainings;
 
-        if (request.getPeriodFrom() != null && request.getPeriodTo() != null) {
-            trainings = trainingRepository.findByTrainerUserUsernameAndTrainingDateBetween(
-                    request.getUsername(), request.getPeriodFrom(), request.getPeriodTo());
-        } else {
-            trainings = trainingRepository.findByTrainerUserUsername(request.getUsername());
-        }
+        trainings = trainingRepository.findByTrainerUserUsernameAndTrainingDateBetweenAndTraineeUserFirstNameContainingIgnoreCase(
+                request.getUsername(), request.getPeriodFrom(), request.getPeriodTo(), request.getTraineeName());
 
         return trainings.stream()
                 .map(trainerTrainingMapper::mapTrainingToResponseDTO)
                 .collect(Collectors.toList());
     }
+
+
+
 }

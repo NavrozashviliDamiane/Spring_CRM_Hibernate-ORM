@@ -2,9 +2,12 @@ package org.damiane.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.damiane.dto.*;
 import org.damiane.dto.trainee.TraineeProfileDTO;
 import org.damiane.dto.trainee.TraineeRegistrationDTO;
+import org.damiane.dto.trainee.TraineeUpdateDTO;
+import org.damiane.dto.trainer.TrainerResponse;
+import org.damiane.dto.training.TrainingDTO;
+import org.damiane.dto.user.UserCredentialsDTO;
 import org.damiane.entity.Trainee;
 import org.damiane.exception.AuthenticationException;
 import org.damiane.service.AuthenticateService;
@@ -186,4 +189,23 @@ public class TraineeController {
                     .body(Collections.singletonList(new TrainingDTO("Error occurred while processing the request. Please try again later.", null, null, null, null)));
         }
     }
+
+
+
+    @PutMapping("/{traineeUsername}/trainers")
+    public ResponseEntity<List<TrainerResponse>> updateTraineeTrainerList(
+            @PathVariable String traineeUsername,
+            @RequestBody List<String> trainerUsernames) {
+        log.info("Received request to update trainer list for trainee: {}", traineeUsername);
+
+        List<TrainerResponse> updatedTrainers = traineeService.updateTraineeTrainerList(traineeUsername, trainerUsernames);
+        if (updatedTrainers != null) {
+            log.info("Trainer list updated successfully for trainee: {}", traineeUsername);
+            return ResponseEntity.ok(updatedTrainers);
+        } else {
+            log.warn("Trainee not found with username: {}", traineeUsername);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
 }

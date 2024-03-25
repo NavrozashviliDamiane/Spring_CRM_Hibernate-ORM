@@ -1,6 +1,6 @@
 package org.damiane.util;
 
-import org.damiane.dto.TrainerUpdateDTO;
+import org.damiane.dto.trainer.TrainerUpdateDTO;
 import org.damiane.entity.Trainer;
 import org.damiane.entity.TrainingType;
 import org.damiane.entity.TrainingTypeValue;

@@ -1,6 +1,6 @@
 package org.damiane.util;
 
-import org.damiane.dto.TraineeDTO;
+import org.damiane.dto.trainee.TraineeDTO;
 import org.damiane.dto.trainer.TrainerProfileDTO;
 import org.damiane.entity.Trainer;
 import org.damiane.entity.TrainingType;

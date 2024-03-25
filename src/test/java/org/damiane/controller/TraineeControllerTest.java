@@ -1,9 +1,7 @@
 package org.damiane.controller;
 
 import org.apache.logging.log4j.Logger;
-import org.damiane.dto.TraineeDTO;
-import org.damiane.dto.TraineeUpdateDTO;
-import org.damiane.dto.UserCredentialsDTO;
+import org.damiane.dto.user.UserCredentialsDTO;
 import org.damiane.dto.trainee.TraineeRegistrationDTO;
 import org.damiane.entity.Trainee;
 import org.damiane.entity.User;

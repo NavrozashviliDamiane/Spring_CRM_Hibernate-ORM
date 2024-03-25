@@ -1,7 +1,6 @@
 package org.damiane.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.damiane.dto.TrainingDTO;
 import org.damiane.dto.trainee.TraineeProfileDTO;
 import org.damiane.entity.*;
 import org.damiane.mapper.TrainingToTrainerMapper;
@@ -9,7 +8,6 @@ import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainingRepository;
 import org.damiane.service.UserService;
 import org.damiane.util.trainee.GetTraineeTrainingsHelper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 

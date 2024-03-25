@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import org.damiane.dto.TrainerDTO;
+import org.damiane.dto.trainer.TrainerDTO;
 import org.damiane.dto.trainer.TrainerProfileDTO;
 import org.damiane.dto.trainer.TrainerRegistrationRequest;
 import org.damiane.entity.*;
@@ -24,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

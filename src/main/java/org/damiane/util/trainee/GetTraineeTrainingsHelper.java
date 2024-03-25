@@ -1,11 +1,10 @@
 package org.damiane.util.trainee;
 
-import org.damiane.dto.TrainingDTO;
+import org.damiane.dto.training.TrainingDTO;
 import org.damiane.entity.Trainer;
 import org.damiane.entity.Training;
 import org.damiane.entity.TrainingType;
 import org.damiane.entity.TrainingTypeValue;
-import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
 import org.damiane.repository.TrainingTypeRepository;
