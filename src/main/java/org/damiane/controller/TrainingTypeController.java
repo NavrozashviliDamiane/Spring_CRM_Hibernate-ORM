@@ -2,6 +2,7 @@ package org.damiane.controller;
 
 import org.damiane.dto.training.TrainingTypeDTO;
 import org.damiane.entity.TrainingType;
+import org.damiane.mapper.TrainingTypeMapper;
 import org.damiane.service.TrainingTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,26 +18,21 @@ import java.util.stream.Collectors;
 public class TrainingTypeController {
 
     private final TrainingTypeService trainingTypeService;
+    private final TrainingTypeMapper trainingTypeMapper;
 
     @Autowired
-    public TrainingTypeController(TrainingTypeService trainingTypeService) {
+    public TrainingTypeController(TrainingTypeService trainingTypeService, TrainingTypeMapper trainingTypeMapper) {
         this.trainingTypeService = trainingTypeService;
+        this.trainingTypeMapper = trainingTypeMapper;
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<TrainingTypeDTO>> getTrainingTypes() {
         List<TrainingType> trainingTypes = trainingTypeService.getAllTrainingTypes();
         List<TrainingTypeDTO> trainingTypeDTOs = trainingTypes.stream()
-                .map(this::mapToTrainingTypeDTO)
+                .map(trainingTypeMapper::mapToTrainingTypeDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(trainingTypeDTOs);
-    }
-
-    private TrainingTypeDTO mapToTrainingTypeDTO(TrainingType trainingType) {
-        TrainingTypeDTO trainingTypeDTO = new TrainingTypeDTO();
-        trainingTypeDTO.setTrainingType(trainingType.getTrainingType().toString());
-        trainingTypeDTO.setTrainingTypeId(trainingType.getId());
-        return trainingTypeDTO;
     }
 }
 
