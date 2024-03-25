@@ -60,14 +60,7 @@ public class TraineeServiceImpl implements TraineeService {
         this.getTraineeTrainingsHelper = getTraineeTrainingsHelper;
     }
 
-    @Override
-    public List<Trainee> getAllTrainees(String username, String password) {
 
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        return traineeRepository.findAll();
-    }
 
 
     @Override
@@ -104,22 +97,6 @@ public class TraineeServiceImpl implements TraineeService {
         }
     }
 
-    @Override
-    public Trainee getTraineeById(Long id, String username, String password) {
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        return traineeRepository.findById(id).orElse(null);
-    }
-
-
-    @Override
-    public Trainee getTraineeByUsername(String username, String password) {
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        return traineeRepository.findByUserUsername(username);
-    }
 
 
     @Override
@@ -159,23 +136,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
 
-    @Override
-    @Transactional
-    public void changeTraineePassword(Long traineeId, String username, String password, String newPassword) {
 
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        Optional<Trainee> traineeOptional = traineeRepository.findById(traineeId);
-        traineeOptional.ifPresent(trainee -> {
-            User user = trainee.getUser();
-            if (user != null) {
-                user.setPassword(newPassword);
-                userService.saveUser(user);
-                log.info("Password Changed Successfully");
-            }
-        });
-    }
 
     @Override
     @Transactional
@@ -204,18 +165,6 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
 
-    @Override
-    public void activateTrainee(String username, boolean isActive) {
-        Trainee trainee = traineeRepository.findByUserUsername(username);
-        if (trainee != null) {
-            User user = trainee.getUser();
-            user.setActive(isActive);
-            userService.saveUser(user);
-            log.info("Trainee activated Successfully!");
-        } else {
-            log.error("Trainee not found with username: " + username);
-        }
-    }
 
     @Override
     @Transactional
@@ -230,20 +179,6 @@ public class TraineeServiceImpl implements TraineeService {
             log.error("Trainee not found with username: " + username);
         }
     }
-
-    @Override
-    public void deactivateTrainee(String username, boolean isActive) {
-        Trainee trainee = traineeRepository.findByUserUsername(username);
-        if (trainee != null) {
-            User user = trainee.getUser();
-            user.setActive(isActive);
-            userService.saveUser(user);
-            log.info("Trainee deactivated Successfully!");
-        } else {
-            log.error("Trainee not found with username: " + username);
-        }
-    }
-
 
     @Override
     @Transactional
@@ -294,36 +229,30 @@ public class TraineeServiceImpl implements TraineeService {
 
         log.info("Updating trainee's trainer list for trainee: {}", traineeUsername);
 
-        // Step 1: Find Trainee by Username
         Trainee trainee = traineeRepository.findByUserUsername(traineeUsername);
 
         if (trainee == null) {
             log.info("Trainee not found with username: {}", traineeUsername);
 
-            // Handle Trainee not found scenario
             return null;
         }
 
         Long traineeId = trainee.getId();
         log.info("Trainee found with ID: {}", traineeId);
 
-        // Step 2: Find Trainings Associated with Trainee
         List<Training> trainings = trainingRepository.findByTraineeId(traineeId);
         log.info("Found {} trainings associated with trainee", trainings.size());
 
 
-        // Step 3 & 4: Find Trainer by Username and Specialization, Update Training with New Trainer
         for (String trainerUsername : trainerUsernames) {
             Trainer trainer = trainerRepository.findByUserUsername(trainerUsername);
             if (trainer != null) {
                 log.info("Trainer found with username: {}", trainerUsername);
-                Long trainerTrainingTypeId = trainer.getTrainingType().getId(); // Get the ID of the Trainer's training type
+                Long trainerTrainingTypeId = trainer.getTrainingType().getId();
 
                 for (Training training : trainings) {
-                    Long trainingTrainingTypeId = training.getTrainingType().getId(); // Get the ID of the Training's training type
-                    // Check if the training type IDs match
+                    Long trainingTrainingTypeId = training.getTrainingType().getId();
                     if (trainingTrainingTypeId.equals(trainerTrainingTypeId)) {
-                        // Update the Training entity with the new Trainer's ID
                         training.setTrainer(trainer);
                         trainingRepository.save(training);
                         log.info("Training updated with new trainer: {}", trainer.getUser());
@@ -333,12 +262,10 @@ public class TraineeServiceImpl implements TraineeService {
         }
 
 
-        // Step 5: Retrieve Updated Trainer List for Trainee
         List<TrainerResponse> updatedTrainers = new ArrayList<>();
         for (Training training : trainings) {
             Trainer trainer = trainerRepository.findById(training.getTrainer().getId()).orElse(null);
             if (trainer != null) {
-                // Create TrainerResponse object with required details
                 TrainerResponse trainerResponse = new TrainerResponse();
                 trainerResponse.setUsername(trainer.getUser().getUsername());
                 trainerResponse.setFirstName(trainer.getUser().getFirstName());
@@ -349,7 +276,6 @@ public class TraineeServiceImpl implements TraineeService {
         }
 
         log.info("Updated trainer list retrieved for trainee: {}", traineeUsername);
-
 
         return updatedTrainers;
     }

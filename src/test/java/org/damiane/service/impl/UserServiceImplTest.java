@@ -27,7 +27,6 @@ public class UserServiceImplTest {
 
     @Test
     void changePassword_ChangesPasswordSuccessfully_WhenValidRequestProvided() {
-        // Arrange
         String username = "john";
         String oldPassword = "oldPassword";
         String newPassword = "newPassword";
@@ -44,16 +43,55 @@ public class UserServiceImplTest {
         when(authenticateService.matchUserCredentials(username, oldPassword)).thenReturn(true);
         when(userRepository.findByUsername(username)).thenReturn(user);
 
-        // Act
         userService.changePassword(request);
 
-        // Assert
         verify(authenticateService).matchUserCredentials(username, oldPassword);
         verify(userRepository).findByUsername(username);
 
-        // Verify that the user's password was updated
         assertEquals(newPassword, user.getPassword());
         verify(userRepository).save(user);
+    }
+
+    @Test
+    void testCreateUser() {
+        String firstName = "John";
+        String lastName = "Doe";
+
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setUsername("johndoe");
+        user.setPassword("password");
+        user.setActive(true);
+
+        when(userRepository.save(any())).thenReturn(user);
+
+        User createdUser = userService.createUser(firstName, lastName);
+
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void testDeleteUserById() {
+        Long userId = 1L;
+
+        userService.deleteUserById(userId);
+
+        verify(userRepository).deleteById(userId);
+    }
+
+    @Test
+    void testSaveUser() {
+        User user = new User();
+        user.setId(1L);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+
+        when(userRepository.save(any())).thenReturn(user);
+
+        User savedUser = userService.saveUser(user);
+
+        verify(userRepository).save(any(User.class));
     }
 
 }

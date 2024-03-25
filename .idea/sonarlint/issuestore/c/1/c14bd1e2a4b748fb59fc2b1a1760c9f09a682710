@@ -1,11 +1,7 @@
 
-‚
-java:S1192B"`Define a constant instead of duplicating this literal "User Authenticated Successfully" 4 times.(”œã´ÿÿÿÿÿ8¸øŞå1
-€
-java:S1192×"bDefine a constant instead of duplicating this literal "Trainee not found with username: " 3 times.(Ï¬ô›8Ÿ¸øŞå1
+I
+java:S1168í"+Return an empty collection instead of null.(¥¹ï8¦ıÁ­ç1
 U
-java:S1068"3Remove this unused "trainingService" private field.(ÍÒ…ÿÿÿÿÿÿ8ƒ»øŞå1
+java:S1068 "3Remove this unused "trainingService" private field.(ÍÒ…ÿÿÿÿÿÿ8âˆÉ¢ç1
 \
-java:S1068&":Remove this unused "trainingTypeRepository" private field.(ì„ãİúÿÿÿÿ8®Àİüå1
-R
-java:S1068("5Remove this unused "trainerRepository" private field.(—Á¬´8¯Àİüå1
+java:S1068'":Remove this unused "trainingTypeRepository" private field.(ì„ãİúÿÿÿÿ8ãˆÉ¢ç1

@@ -68,39 +68,11 @@ public class TrainerServiceImpl implements TrainerService {
         this.profileDtoCreator = profileDtoCreator;
     }
 
-    @Override
-    public Trainer getTrainerByUsername(String username, String password ) {
 
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-        return trainerRepository.findByUserUsername(username);
-    }
 
-    @Override
-    @Transactional
-    public void changeTrainerPassword(Long trainerId, String username, String password, String newPassword) {
 
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
 
-        Optional<Trainer> trainerOptional = trainerRepository.findById(trainerId);
-        trainerOptional.ifPresent(trainer -> {
-            User user = trainer.getUser();
-            if (user != null) {
-                user.setPassword(newPassword);
-                userService.saveUser(user);
-                log.info("Trainer Password Changed Successfully");
-            }
-        });
-    }
 
-    @Override
-    public List<Trainer> getAllTrainers(String username, String password) {
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        return trainerRepository.findAll();
-    }
 
     @Override
     @Transactional
@@ -147,13 +119,7 @@ public class TrainerServiceImpl implements TrainerService {
         return profileDTO;
     }
 
-    @Override
-    public Trainer getTrainerById(Long id, String username, String password) {
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
 
-        return trainerRepository.findById(id).orElse(null);
-    }
 
 
     @Override
@@ -189,49 +155,6 @@ public class TrainerServiceImpl implements TrainerService {
         }
     }
 
-
-    @Override
-    public void deleteTrainer(Long id, String username, String password) {
-
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        trainerRepository.deleteById(id);
-        log.info("Trainer Deleted Successfully");
-    }
-
-    @Override
-    public void activateTrainer(Long trainerId,  String username, String password) {
-
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        Trainer trainer = trainerRepository.findById(trainerId).orElse(null);
-        if (trainer != null) {
-            User user = trainer.getUser();
-            user.setActive(true);
-            userService.saveUser(user);
-
-            trainerRepository.save(trainer);
-            log.info("Trainer Activated Successfully");
-        }
-    }
-
-    @Override
-    public void deactivateTrainer(Long trainerId, String username, String password) {
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        Trainer trainer = trainerRepository.findById(trainerId).orElse(null);
-        if (trainer != null) {
-            User user = trainer.getUser();
-            user.setActive(false);
-            userService.saveUser(user);
-
-            trainerRepository.save(trainer);
-            log.info("Trainer Deactivated Successfully");
-        }
-    }
 
     @Override
     @Transactional

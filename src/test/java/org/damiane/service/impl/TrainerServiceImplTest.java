@@ -6,26 +6,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import org.damiane.dto.trainer.TrainerDTO;
-import org.damiane.dto.trainer.TrainerProfileDTO;
-import org.damiane.dto.trainer.TrainerRegistrationRequest;
+import org.damiane.dto.trainer.*;
 import org.damiane.entity.*;
 import org.damiane.mapper.TrainerMapper;
+import org.damiane.mapper.TrainerTrainingMapper;
 import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
 import org.damiane.repository.TrainingTypeRepository;
 import org.damiane.service.UserService;
+import org.damiane.util.TrainerProfileDtoCreator;
+import org.damiane.util.TrainerSpecializationUpdater;
+import org.damiane.util.UserUpdateHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -38,10 +43,22 @@ public class TrainerServiceImplTest {
     private TrainingTypeRepository trainingTypeRepository;
 
     @Mock
+    private TrainerProfileDtoCreator profileDtoCreator;
+
+    @Mock
+    private TrainerTrainingMapper trainerTrainingMapper;
+
+    @Mock
+    private TrainerSpecializationUpdater specializationUpdater;
+
+    @Mock
     private TrainerRepository trainerRepository;
 
     @Mock
     private TraineeRepository traineeRepository;
+
+    @Mock
+    private UserUpdateHelper userUpdateHelper;
 
     @Mock
     private AuthenticateServiceImpl authenticateService;
@@ -155,36 +172,86 @@ public class TrainerServiceImplTest {
 
     @Test
     void testFindUnassignedActiveTrainersByTraineeUsername() {
-        // Mocking trainee
         Trainee trainee = new Trainee();
         trainee.setId(1L);
 
-        // Mocking trainings
         List<Training> trainings = new ArrayList<>();
-        // Assuming trainings are already assigned to the trainee
-        // If you have specific scenarios, you can modify this accordingly
 
-        // Mocking trainee repository
         when(traineeRepository.findByUserUsername("traineeUsername")).thenReturn(trainee);
 
-        // Mocking training repository
         when(trainingRepository.findByTraineeId(1L)).thenReturn(trainings);
 
-        // Mocking trainer repository
         List<Trainer> trainers = new ArrayList<>();
-        // Assuming some trainers are unassigned
-        // If you have specific scenarios, you can modify this accordingly
         when(trainerRepository.findAll()).thenReturn(trainers);
 
-        // Call the method
         List<TrainerDTO> result = trainerService.findUnassignedActiveTrainersByTraineeUsername("traineeUsername", "password");
 
-        // Verify
-        assertEquals(0, result.size()); // Assuming no unassigned trainers in this scenario
+        assertEquals(0, result.size());
         verify(authenticateService, times(1)).matchUserCredentials("traineeUsername", "password");
         verify(traineeRepository, times(1)).findByUserUsername("traineeUsername");
         verify(trainingRepository, times(1)).findByTraineeId(1L);
         verify(trainerRepository, times(1)).findAll();
-        // No need to verify conversion since it's not used in this scenario
     }
+
+    @Test
+    void testUpdateTrainerProfile() {
+        TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO();
+        trainerUpdateDTO.setUsername("username");
+        trainerUpdateDTO.setPassword("password");
+        trainerUpdateDTO.setSpecialization("someSpecialization"); // Assuming this is set properly
+
+        Trainer trainer = new Trainer();
+        when(trainerRepository.findByUserUsername(trainerUpdateDTO.getUsername())).thenReturn(trainer);
+        when(authenticateService.matchUserCredentials(trainerUpdateDTO.getUsername(), trainerUpdateDTO.getPassword())).thenReturn(true);
+
+        trainerService.updateTrainerProfile(trainerUpdateDTO);
+
+        verify(specializationUpdater).updateSpecialization(trainer, trainerUpdateDTO);
+    }
+
+
+    @Test
+    void testGetTrainerTrainings() {
+        TrainerTrainingsRequestDTO request = new TrainerTrainingsRequestDTO();
+        request.setUsername("username");
+        LocalDate periodFrom = LocalDate.of(2024, 1, 1);
+        LocalDate periodTo = LocalDate.of(2024, 12, 31);
+        request.setTraineeName("traineeName");
+
+        List<Training> trainings = Collections.singletonList(new Training());
+        when(trainingRepository.findByTrainerUserUsernameAndTrainingDateBetweenAndTraineeUserFirstNameContainingIgnoreCase(
+                request.getUsername(), request.getPeriodFrom(), request.getPeriodTo(), request.getTraineeName()))
+                .thenReturn(trainings);
+
+        List<TrainerTrainingResponseDTO> expectedResponse = Collections.singletonList(null);
+
+        when(trainerTrainingMapper.mapTrainingToResponseDTO(ArgumentMatchers.any()))
+                .thenReturn(null);
+
+        List<TrainerTrainingResponseDTO> actualResponse = trainerService.getTrainerTrainings(request);
+
+        assertEquals(expectedResponse, actualResponse);
+        verify(trainingRepository).findByTrainerUserUsernameAndTrainingDateBetweenAndTraineeUserFirstNameContainingIgnoreCase(
+                request.getUsername(), request.getPeriodFrom(), request.getPeriodTo(), request.getTraineeName());
+        verify(trainerTrainingMapper, times(trainings.size())).mapTrainingToResponseDTO(ArgumentMatchers.any());
+    }
+
+
+    @Test
+    void testUpdateTrainerStatus() {
+        String username = "username";
+        boolean isActive = false;
+
+        Trainer trainer = new Trainer();
+        User user = new User();
+        trainer.setUser(user);
+
+        when(trainerRepository.findByUserUsername(username)).thenReturn(trainer);
+
+        trainerService.updateTrainerStatus(username, isActive);
+
+        verify(userService).saveUser(user);
+        assertEquals(isActive, user.isActive());
+    }
+
 }

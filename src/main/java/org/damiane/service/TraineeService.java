@@ -13,33 +13,23 @@ import java.util.List;
 @Service
 public interface TraineeService {
 
-    List<Trainee> getAllTrainees(String username, String password);
-
     TraineeProfileDTO getTraineeProfile(String username);
-
-    Trainee getTraineeById(Long id, String username, String password);
-
-    Trainee getTraineeByUsername(String username, String password);
 
 
     @Transactional
     Trainee updateTraineeProfile(String username, String firstName, String password, String lastName,
                                  Date dateOfBirth, String address, boolean isActive);
 
-    void changeTraineePassword(Long traineeId, String username, String password, String newPassword);
 
     Trainee createTrainee(String firstName, String lastName, Date dateOfBirth, String address);
 
 
-    void activateTrainee(String username, boolean isActive);
 
     @Transactional
     void updateTraineeStatus(String username, boolean isActive);
 
-    void deactivateTrainee(String username, boolean isActive);
 
 
-    // TraineeService.java
     @Transactional
     void deleteTraineeByUsername(String username);
 

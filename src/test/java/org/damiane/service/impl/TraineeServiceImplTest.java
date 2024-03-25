@@ -2,9 +2,11 @@ package org.damiane.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.damiane.dto.trainee.TraineeProfileDTO;
+import org.damiane.dto.training.TrainingDTO;
 import org.damiane.entity.*;
 import org.damiane.mapper.TrainingToTrainerMapper;
 import org.damiane.repository.TraineeRepository;
+import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
 import org.damiane.service.UserService;
 import org.damiane.util.trainee.GetTraineeTrainingsHelper;
@@ -14,9 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +30,13 @@ class TraineeServiceImplTest {
     private UserService userService;
 
     @Mock
+    private TrainerRepository trainerRepository;
+
+    @Mock
     private Trainee trainee;
+
+    @Mock
+    private GetTraineeTrainingsHelper getTraineeTrainingsHelper;
 
     @Mock
     private TraineeRepository traineeRepository;
@@ -80,7 +86,6 @@ class TraineeServiceImplTest {
 
     @Test
     void getTraineeProfile_CreatesTraineeSuccessfully_WhenUserExists() {
-        // Mocking data
         String username = "testUser";
         Trainee trainee = new Trainee();
         trainee.setId(1L);
@@ -92,14 +97,11 @@ class TraineeServiceImplTest {
         trainee.setDateOfBirth(new Date());
         trainee.setAddress("123 Main St");
         List<Training> trainings = new ArrayList<>();
-        // Add some mock training objects if needed
         when(traineeRepository.findByUserUsername(username)).thenReturn(trainee);
         when(trainingRepository.findByTraineeId(trainee.getId())).thenReturn(trainings);
 
-        // Invoke the method
         TraineeProfileDTO profileDTO = traineeService.getTraineeProfile(username);
 
-        // Verify the interactions and assertions
         assertEquals(user.getFirstName(), profileDTO.getFirstName());
         assertEquals(user.getLastName(), profileDTO.getLastName());
         assertEquals(trainee.getDateOfBirth(), profileDTO.getDateOfBirth());
@@ -112,16 +114,14 @@ class TraineeServiceImplTest {
 
     @Test
     void getTraineeProfile_TraineeNotFound_WhenUserDoesNotExist() {
-        // Mocking data
         String username = "nonExistentUser";
         when(traineeRepository.findByUserUsername(username)).thenReturn(null);
 
-        // Invoke the method
         TraineeProfileDTO profileDTO = traineeService.getTraineeProfile(username);
 
         assertNull(profileDTO);
         verify(traineeRepository).findByUserUsername(username);
-        verifyNoInteractions(trainingRepository, trainingToTrainerMapper); // No interactions with these mocks
+        verifyNoInteractions(trainingRepository, trainingToTrainerMapper);
     }
 
 
@@ -129,15 +129,12 @@ class TraineeServiceImplTest {
 
     @Test
     void updateTraineeProfile_TraineeNotFound() {
-        // Mocking data
         String username = "nonExistentUser";
         when(traineeRepository.findByUserUsername(username)).thenReturn(null);
 
-        // Invoke the method
         Trainee updatedTrainee = traineeService.updateTraineeProfile(username, "John", "password", "Doe",
                 new Date(), "123 Main St", true);
 
-        // Verify interactions and assertions
         assertNull(updatedTrainee);
         verify(authenticateService).matchUserCredentials(username, "password");
         verify(traineeRepository).findByUserUsername(username);
@@ -146,20 +143,141 @@ class TraineeServiceImplTest {
 
     @Test
     void updateTraineeProfile_ThrowsException_WhenErrorOccurs() {
-        // Mocking data
         String username = "testUser";
         when(traineeRepository.findByUserUsername(username)).thenThrow(new RuntimeException("Mocked exception"));
 
-        // Invoke the method
         assertThrows(RuntimeException.class, () -> traineeService.updateTraineeProfile(username, "John",
                 "password", "Doe", new Date(), "123 Main St", true));
 
-        // Verify interactions
         verify(authenticateService).matchUserCredentials(username, "password");
         verify(traineeRepository).findByUserUsername(username);
         verifyNoMoreInteractions(userService);
     }
 
+    @Test
+    void updateTraineeStatus_TraineeFound_Active() {
+        String username = "trainee";
+        boolean isActive = true;
+        Trainee trainee = new Trainee();
+        User user = new User();
+        trainee.setUser(user);
+        when(traineeRepository.findByUserUsername(username)).thenReturn(trainee);
+
+        traineeService.updateTraineeStatus(username, isActive);
+
+        assertTrue(user.isActive());
+        verify(userService, times(1)).saveUser(user);
+    }
+
+    @Test
+    void updateTraineeStatus_TraineeNotFound() {
+        String username = "nonexistent_trainee";
+        boolean isActive = true;
+        when(traineeRepository.findByUserUsername(username)).thenReturn(null);
+
+        traineeService.updateTraineeStatus(username, isActive);
+
+        verifyNoInteractions(userService);
+    }
+
+    @Test
+    void deleteTraineeByUsername_Success() {
+        String username = "existing_trainee";
+        Trainee trainee = new Trainee();
+        trainee.setId(1L);
+        User user = new User();
+        user.setId(1L);
+        trainee.setUser(user);
+        when(traineeRepository.findByUserUsername(username)).thenReturn(trainee);
+
+        List<Training> trainings = new ArrayList<>();
+        trainings.add(new Training());
+        when(trainingRepository.findByTraineeId(trainee.getId())).thenReturn(trainings);
+
+        traineeService.deleteTraineeByUsername(username);
+
+        verify(trainingRepository, times(1)).findByTraineeId(trainee.getId());
+        verify(trainingRepository, times(1)).deleteAll(trainings);
+        verify(userService, times(1)).deleteUserById(user.getId());
+        verify(traineeRepository, times(1)).delete(trainee);
+    }
+
+    @Test
+    void deleteTraineeByUsername_WithTrainings() {
+        String username = "existing_trainee";
+        Trainee trainee = new Trainee();
+        trainee.setId(1L);
+        User user = new User();
+        user.setId(1L);
+        trainee.setUser(user);
+        List<Training> trainings = new ArrayList<>();
+        trainings.add(new Training());
+        when(traineeRepository.findByUserUsername(username)).thenReturn(trainee);
+        when(trainingRepository.findByTraineeId(trainee.getId())).thenReturn(trainings);
+
+        traineeService.deleteTraineeByUsername(username);
+
+        verify(trainingRepository, times(1)).findByTraineeId(trainee.getId());
+        verify(trainingRepository, times(1)).deleteAll(trainings);
+        verify(userService, times(1)).deleteUserById(user.getId());
+        verify(traineeRepository, times(1)).delete(trainee);
+    }
+
+
+    @Test
+    void getTraineeTrainingsList_Success() {
+        String username = "trainee_username";
+        String password = "trainee_password";
+        Date fromDate = new Date();
+        Date toDate = new Date();
+        String trainerName = "trainer_name";
+        String trainingTypeName = "training_type_name";
+
+        Trainee trainee = new Trainee();
+        trainee.setId(1L);
+        when(traineeRepository.findByUserUsername(username)).thenReturn(trainee);
+
+        Long trainerId = 0L;
+        Long trainingTypeId = 0L;
+        List<TrainingDTO> trainingDTOList = Collections.emptyList();
+        when(getTraineeTrainingsHelper.getTrainerId(trainerName)).thenReturn(trainerId);
+        when(getTraineeTrainingsHelper.getTrainingTypeId(trainingTypeName)).thenReturn(trainingTypeId);
+        when(getTraineeTrainingsHelper.constructQuery(trainee.getId(), fromDate, toDate, trainerId, trainingTypeId))
+                .thenReturn(Collections.emptyList());
+        when(getTraineeTrainingsHelper.mapToTrainingDTO(Collections.emptyList()))
+                .thenReturn(trainingDTOList);
+
+        traineeService.getTraineeTrainingsList(username, password, fromDate, toDate, trainerName, trainingTypeName);
+
+        verify(getTraineeTrainingsHelper, times(1)).constructQuery(trainee.getId(), fromDate, toDate, trainerId, trainingTypeId);
+    }
+
+
+    @Test
+    void updateTraineeTrainerList_TraineeFoundAndTrainerFound_TrainingUpdated() {
+        String traineeUsername = "trainee_username";
+        List<String> trainerUsernames = List.of("trainer1", "trainer2");
+
+        Trainee trainee = new Trainee();
+        trainee.setId(1L);
+        when(traineeRepository.findByUserUsername(traineeUsername)).thenReturn(trainee);
+
+        Trainer trainer1 = new Trainer();
+        trainer1.setId(1L);
+        trainer1.setTrainingType(new TrainingType());
+        when(trainerRepository.findByUserUsername("trainer1")).thenReturn(trainer1);
+        Trainer trainer2 = new Trainer();
+        trainer2.setId(2L);
+        trainer2.setTrainingType(new TrainingType());
+        when(trainerRepository.findByUserUsername("trainer2")).thenReturn(trainer2);
+
+        List<Training> trainings = new ArrayList<>();
+        when(trainingRepository.findByTraineeId(trainee.getId())).thenReturn(trainings);
+
+        traineeService.updateTraineeTrainerList(traineeUsername, trainerUsernames);
+
+
+    }
 
 
 }

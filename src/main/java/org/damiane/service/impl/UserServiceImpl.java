@@ -30,23 +30,8 @@ public class UserServiceImpl implements UserService {
         this.authenticateService = authenticateService;
     }
 
-    @Override
-    public List<User> getAllUsers(String username, String password) {
 
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
 
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User getUserById(Long id, String username, String password) {
-
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        return userRepository.findById(id).orElse(null);
-    }
 
     @Override
     @Transactional
@@ -70,16 +55,6 @@ public class UserServiceImpl implements UserService {
         return createdUser;
     }
 
-    @Override
-    @Transactional
-    public void deleteUser(Long id, String username, String password) {
-
-        authenticateService.matchUserCredentials(username, password);
-        log.info("User Authenticated Successfully");
-
-        userRepository.deleteById(id);
-        log.info("User Deleted Successfully");
-    }
 
     @Override
     @Transactional

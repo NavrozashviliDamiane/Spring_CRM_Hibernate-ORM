@@ -9,9 +9,6 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    List<User> getAllUsers(String username, String password);
-
-    User getUserById(Long id, String username, String password);
 
     User createUser(String firstName, String lastName);
 
@@ -19,9 +16,6 @@ public interface UserService {
     void deleteUserById(Long userId);
 
     User saveUser(User user);
-
-    void deleteUser(Long id, String username, String password);
-
 
     void changePassword(ChangePasswordRequest request);
 }
