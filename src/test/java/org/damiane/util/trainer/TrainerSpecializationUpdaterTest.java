@@ -32,7 +32,7 @@ public class TrainerSpecializationUpdaterTest {
     }
 
     @Test
-    public void testUpdateSpecialization() {
+    public void updateSpecialization_SetsSpecialization_WhenValidSpecializationProvided() {
         Trainer trainer = new Trainer();
         TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO();
         trainerUpdateDTO.setSpecialization("YOGA");
@@ -47,7 +47,7 @@ public class TrainerSpecializationUpdaterTest {
     }
 
     @Test
-    public void testUpdateSpecializationWithNullSpecialization() {
+    public void updateSpecialization_DoesNotSetSpecialization_WhenSpecializationIsNull() {
         Trainer trainer = new Trainer();
         TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO();
 
@@ -57,7 +57,7 @@ public class TrainerSpecializationUpdaterTest {
     }
 
     @Test
-    public void testUpdateSpecializationWithUnknownSpecialization() {
+    public void updateSpecialization_DoesNotSetSpecialization_WhenSpecializationIsUnknown() {
         Trainer trainer = new Trainer();
         TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO();
         trainerUpdateDTO.setSpecialization("YOGA");

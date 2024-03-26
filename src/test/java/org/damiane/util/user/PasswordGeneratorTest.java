@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class PasswordGeneratorTest {
 
     @Test
-    public void testGeneratePassword() {
+    public void generatePassword_ReturnsPasswordWithSpecifiedLengthAndValidCharacters() {
         int length = 10;
         String generatedPassword = PasswordGenerator.generatePassword(length);
         assertEquals(length, generatedPassword.length());

@@ -26,7 +26,7 @@ public class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void changePassword_ChangesPasswordSuccessfully_WhenValidRequestProvided() {
+    void changePassword_SuccessfullyChangesPassword_WhenValidRequestProvided() {
         String username = "john";
         String oldPassword = "oldPassword";
         String newPassword = "newPassword";
@@ -53,7 +53,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testCreateUser() {
+    void createUser_CreatesUserSuccessfully_WhenValidParametersProvided() {
         String firstName = "John";
         String lastName = "Doe";
 
@@ -72,7 +72,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testDeleteUserById() {
+    void deleteUserById_DeletesUserByIdSuccessfully() {
         Long userId = 1L;
 
         userService.deleteUserById(userId);
@@ -81,7 +81,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testSaveUser() {
+    void saveUser_SavesUserSuccessfully() {
         User user = new User();
         user.setId(1L);
         user.setFirstName("John");

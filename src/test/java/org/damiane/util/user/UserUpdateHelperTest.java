@@ -23,7 +23,7 @@ public class UserUpdateHelperTest {
     private UserUpdateHelper userUpdateHelper;
 
     @Test
-    public void testUpdateUser() {
+    public void updateUser_UpdatesUserWithTrainerUpdateDTO_WhenValidUserAndTrainerUpdateDTOProvided() {
         User user = new User();
         user.setFirstName("John");
         user.setLastName("Doe");

@@ -77,7 +77,7 @@ public class TrainerServiceImplTest {
     private User user;
 
     @Test
-    void createTrainer_CreatesTrainerSuccessfully_WhenValidDataProvided() {
+    void When_CreateTrainerWithValidData_Then_TrainerIsSuccessfullyCreated() {
         String firstName = "John";
         String lastName = "Doe";
         String specialization = "CARDIO";
@@ -131,7 +131,7 @@ public class TrainerServiceImplTest {
     }
 
     @Test
-    public void testGetTrainerProfile() {
+    public void When_GetTrainerProfileWithExistingUser_Then_ReturnTrainerProfileDTO() {
         String username = "testuser";
         String password = "testpassword";
 
@@ -153,7 +153,7 @@ public class TrainerServiceImplTest {
     }
 
     @Test
-    public void testGetTrainerProfile_TrainerNotFound() {
+    public void When_GetTrainerProfileWithNonExistingUser_Then_ReturnNull() {
         String username = "unknownuser";
         String password = "testpassword";
 
@@ -170,7 +170,7 @@ public class TrainerServiceImplTest {
 
 
     @Test
-    void testFindUnassignedActiveTrainersByTraineeUsername() {
+    void When_UpdateTrainerProfileWithExistingUser_Then_SpecializationIsUpdated() {
         Trainee trainee = new Trainee();
         trainee.setId(1L);
 
@@ -193,7 +193,7 @@ public class TrainerServiceImplTest {
     }
 
     @Test
-    void testUpdateTrainerProfile() {
+    void When_FindUnassignedActiveTrainersByTraineeUsername_Then_ReturnTrainersList() {
         TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO();
         trainerUpdateDTO.setUsername("username");
         trainerUpdateDTO.setPassword("password");
@@ -210,7 +210,7 @@ public class TrainerServiceImplTest {
 
 
     @Test
-    void testGetTrainerTrainings() {
+    void When_GetTrainerTrainings_WithValidRequest_Then_ReturnTrainerTrainingsList() {
         TrainerTrainingsRequestDTO request = new TrainerTrainingsRequestDTO();
         request.setUsername("username");
         LocalDate periodFrom = LocalDate.of(2024, 1, 1);
@@ -237,7 +237,7 @@ public class TrainerServiceImplTest {
 
 
     @Test
-    void testUpdateTrainerStatus() {
+    void When_UpdateTrainerStatus_Then_TrainerStatusIsUpdated() {
         String username = "username";
         boolean isActive = false;
 

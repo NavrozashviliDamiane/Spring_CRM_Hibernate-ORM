@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TrainerMapperTest {
 
     @Test
-    void convertToTrainerDTO_ReturnsCorrectTrainerDTO() {
+    void GivenTrainerWithTrainingType_WhenConvertingToDTO_ThenReturnCorrectTrainerDTO() {
         User user = new User();
         user.setId(1L);
         user.setUsername("username");

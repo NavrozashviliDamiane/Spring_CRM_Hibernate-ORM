@@ -23,7 +23,7 @@ public class LoginControllerTest {
     private LoginController loginController;
 
     @Test
-    void login_ReturnsOkResponse_WhenCredentialsMatch() {
+    void Given_AuthenticateServiceInitialized_When_MatchingUserCredentials_Then_ReturnsOkResponseWhenCredentialsMatch() {
         String username = "john";
         String password = "password";
         when(authenticateService.matchUserCredentials(username, password)).thenReturn(true);
@@ -35,16 +35,13 @@ public class LoginControllerTest {
     }
 
     @Test
-    void login_ReturnsUnauthorizedResponse_WhenCredentialsDoNotMatch() {
-        // Arrange
+    void Given_AuthenticateServiceInitialized_When_MatchingUserCredentials_Then_ReturnsUnauthorizedResponseWhenCredentialsDoNotMatch() {
         String username = "john";
         String password = "password";
         when(authenticateService.matchUserCredentials(username, password)).thenReturn(false);
 
-        // Act
         ResponseEntity<String> responseEntity = loginController.login(username, password);
 
-        // Assert
         assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
         assertEquals("Invalid username or password", responseEntity.getBody());
     }

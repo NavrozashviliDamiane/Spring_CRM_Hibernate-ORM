@@ -19,13 +19,13 @@ public class JpaConfigTest {
     private JpaConfig jpaConfig;
 
     @Test
-    public void testDataSource() {
+    public void Given_JpaConfigInitialized_When_GettingDataSource_Then_NonNullDataSource() {
         DataSource dataSource = jpaConfig.dataSource();
         assertNotNull(dataSource);
     }
 
     @Test
-    public void testEntityManagerFactory() {
+    public void Given_JpaConfigInitialized_When_GettingEntityManagerFactory_Then_NonNullEntityManagerFactory() {
         DataSource dataSourceMock = mock(DataSource.class);
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = jpaConfig.entityManagerFactory();
         assertNotNull(entityManagerFactoryBean);
@@ -33,7 +33,7 @@ public class JpaConfigTest {
     }
 
     @Test
-    public void testTransactionManager() {
+    public void Given_EntityManagerFactoryMockInitialized_When_GettingTransactionManager_Then_NonNullTransactionManager() {
         EntityManagerFactory entityManagerFactoryMock = mock(EntityManagerFactory.class);
         assertNotNull(jpaConfig.transactionManager(entityManagerFactoryMock));
     }

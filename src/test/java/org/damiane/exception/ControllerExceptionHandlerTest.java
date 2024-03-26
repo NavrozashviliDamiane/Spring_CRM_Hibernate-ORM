@@ -25,7 +25,7 @@ class ControllerExceptionHandlerTest {
     private ControllerExceptionHandler exceptionHandler;
 
     @Test
-    void handleIllegalArgumentException() {
+    void GivenIllegalArgumentException_WhenHandlingIllegalArgumentException_ThenReturnBadRequest() {
         IllegalArgumentException ex = new IllegalArgumentException("Bad Request");
         ResponseEntity<ControllerExceptionHandler.ErrorResponseDTO> response = exceptionHandler.handleIllegalArgumentException(ex);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -34,7 +34,7 @@ class ControllerExceptionHandlerTest {
 
 
     @Test
-    void handleNoSuchElementException() {
+    void GivenNoSuchElementException_WhenHandlingNoSuchElementException_ThenReturnNotFound() {
         NoSuchElementException ex = new NoSuchElementException("Not Found");
         ResponseEntity<ControllerExceptionHandler.ErrorResponseDTO> response = exceptionHandler.handleNoSuchElementException(ex);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -42,7 +42,7 @@ class ControllerExceptionHandlerTest {
     }
 
     @Test
-    void handleDataIntegrityViolationException() {
+    void GivenDataIntegrityViolationException_WhenHandlingDataIntegrityViolationException_ThenReturnConflict() {
         DataIntegrityViolationException ex = new DataIntegrityViolationException("Conflict");
         ResponseEntity<ControllerExceptionHandler.ErrorResponseDTO> response = exceptionHandler.handleDataIntegrityViolationException(ex);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -50,7 +50,7 @@ class ControllerExceptionHandlerTest {
     }
 
     @Test
-    void handleException() {
+    void GivenGeneralException_WhenHandlingException_ThenReturnInternalServerError() {
         Exception ex = new Exception("Internal Server Error");
         ResponseEntity<ControllerExceptionHandler.ErrorResponseDTO> response = exceptionHandler.handleException(ex);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());

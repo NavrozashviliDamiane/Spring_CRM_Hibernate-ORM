@@ -33,7 +33,7 @@ public class GetTraineeTrainingsHelperTest {
     private GetTraineeTrainingsHelper trainingsHelper;
 
     @Test
-    public void testGetTrainerId() {
+    public void getTrainerId_ReturnsTrainerId_WhenTrainerExists() {
         String trainerName = "JohnDoe";
         Trainer trainer = new Trainer();
         trainer.setId(1L);
@@ -47,7 +47,7 @@ public class GetTraineeTrainingsHelperTest {
 
 
     @Test
-    public void testConstructQuery() {
+    public void constructQuery_ReturnsEmptyList_WhenNoTrainingsFound() {
         Long traineeId = 1L;
         Date fromDate = new Date();
         Date toDate = new Date();
@@ -63,7 +63,7 @@ public class GetTraineeTrainingsHelperTest {
     }
 
     @Test
-    public void testMapToTrainingDTO() {
+    public void mapToTrainingDTO_ReturnsListOfTrainingDTO_WhenTrainingsExist() {
         Training training = new Training();
         training.setTrainingName("Training1");
         training.setTrainingType(null);
@@ -86,7 +86,7 @@ public class GetTraineeTrainingsHelperTest {
 
 
     @Test
-    public void testGetTrainingTypeId() {
+    public void getTrainingTypeId_ReturnsTrainingTypeId_WhenTrainingTypeExists() {
         String trainingTypeName = "CARDIO";
         TrainingTypeValue validTrainingTypeValue = TrainingTypeValue.CARDIO;
         TrainingType trainingType = new TrainingType();

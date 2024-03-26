@@ -38,7 +38,7 @@ public class TraineeMapperTest {
     }
 
     @Test
-    void mapTraineeToDTO_ReturnsCorrectTraineeProfileDTO() {
+    void GivenTraineeWithTrainingData_WhenMappingToDTO_ThenReturnCorrectTraineeProfileDTO() {
         Trainee trainee = new Trainee();
         trainee.setId(1L);
         trainee.setAddress("123 Main St");

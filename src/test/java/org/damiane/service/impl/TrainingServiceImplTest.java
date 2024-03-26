@@ -42,7 +42,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetAllTrainings() {
+    void getAllTrainings_ValidCredentials_ReturnListOfTrainings() {
         String username = "testUser";
         String password = "testPassword";
         List<Training> expectedTrainings = List.of(new Training(), new Training());
@@ -58,7 +58,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testCreateTraining() {
+    void createTraining_ValidCredentials_ReturnCreatedTraining() {
         String traineeUsername = "trainee";
         String trainerUsername = "trainer";
         String trainingName = "Test Training";
@@ -96,7 +96,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testDeleteTraining() {
+    void deleteTraining_ValidCredentials_DeleteTrainingById() {
         Long trainingId = 1L;
         String username = "testUser";
         String password = "testPassword";
@@ -110,7 +110,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testUpdateTrainingForTrainee() {
+    void updateTrainingForTrainee_ExistingTrainee_UpdateTraining() {
         String traineeUsername = "trainee";
 
         Trainee trainee = new Trainee();
@@ -124,7 +124,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTrainingsByTraineeUsernameAndCriteria() {
+    void getTrainingsByTraineeUsernameAndCriteria_ValidCredentials_ReturnFilteredTrainingsForTrainee() {
         String username = "trainee";
         String password = "testPassword";
         Date fromDate = new Date();
@@ -162,7 +162,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTrainingsByTrainerUsernameAndCriteria() {
+    void getTrainingsByTrainerUsernameAndCriteria_ValidCredentials_ReturnFilteredTrainingsForTrainer() {
         String username = "trainer";
         String password = "testPassword";
         Date fromDate = new Date();

@@ -35,7 +35,7 @@ class TrainingTypeControllerTest {
     }
 
     @Test
-    void getTrainingTypes_ReturnsTrainingTypeDTOList() {
+    void GivenTrainingTypesExist_WhenGettingTrainingTypes_ThenReturnTrainingTypeDTOList() {
         List<TrainingType> trainingTypes = new ArrayList<>();
         trainingTypes.add(new TrainingType());
         trainingTypes.add(new TrainingType());
@@ -56,7 +56,7 @@ class TrainingTypeControllerTest {
     }
 
     @Test
-    void getTrainingTypes_EmptyList_ReturnsEmptyList() {
+    void GivenNoTrainingTypesExist_WhenGettingTrainingTypes_ThenReturnEmptyList() {
         List<TrainingType> trainingTypes = new ArrayList<>();
 
         when(trainingTypeService.getAllTrainingTypes()).thenReturn(trainingTypes);

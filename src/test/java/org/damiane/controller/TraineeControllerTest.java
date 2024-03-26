@@ -41,7 +41,7 @@ class TraineeControllerTest {
     private TraineeController traineeController;
 
     @Test
-    void registerTrainee_CreatesTraineeSuccessfully_WhenValidRegistrationDataProvided() {
+    void Given_TraineeServiceInitialized_When_RegisteringTrainee_Then_ReturnsCreatedResponseOnValidRegistrationData() {
         TraineeRegistrationDTO registrationDTO = new TraineeRegistrationDTO();
         registrationDTO.setFirstName("Damiane");
         registrationDTO.setLastName("Navrozashvili");
@@ -69,7 +69,7 @@ class TraineeControllerTest {
 
 
     @Test
-    void deleteTraineeProfile_Successful() {
+    void Given_AuthenticateServiceInitialized_When_DeletingTraineeProfile_Then_ReturnsOkResponseOnSuccessfulDeletion() {
         String username = "testUser";
         String password = "password";
 
@@ -84,7 +84,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    void deleteTraineeProfile_Unauthorized() {
+    void Given_AuthenticateServiceInitialized_When_DeletingTraineeProfile_Then_ReturnsUnauthorizedResponseOnInvalidCredentials() {
         String username = "testUser";
         String password = "password";
 
@@ -99,7 +99,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void testUpdateTraineeTrainerList_Success() {
+    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainerList_Then_ReturnsOkResponseOnSuccess() {
         List<TrainerResponse> updatedTrainers = Arrays.asList(
                 new TrainerResponse("username1", "John", "Doe", "Specialization1"),
                 new TrainerResponse("username2", "Jane", "Smith", "Specialization2")
@@ -115,7 +115,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void testUpdateTraineeTrainerList_NotFound() {
+    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainerList_Then_ReturnsNotFoundResponseIfTraineeNotFound() {
         when(traineeService.updateTraineeTrainerList(anyString(), anyList())).thenReturn(null);
 
         ResponseEntity<List<TrainerResponse>> responseEntity = traineeController.updateTraineeTrainerList("nonExistingTrainee", Arrays.asList("trainerUsername1", "trainerUsername2"));
@@ -127,7 +127,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void getTraineeProfile_ValidCredentials_Success() {
+    public void Given_AuthenticateServiceInitialized_When_GettingTraineeProfile_Then_ReturnsOkResponseOnValidCredentials() {
         String username = "test";
         String password = "password";
         TraineeProfileDTO profileDTO = new TraineeProfileDTO();
@@ -157,7 +157,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void getTraineeProfile_InvalidCredentials_ReturnsUnauthorized() {
+    public void Given_AuthenticateServiceInitialized_When_GettingTraineeProfile_Then_ReturnsUnauthorizedResponseOnInvalidCredentials() {
         String username = "test";
         String password = "password";
         when(authenticateService.matchUserCredentials(username, password)).thenReturn(false);
@@ -170,7 +170,7 @@ class TraineeControllerTest {
 
 
     @Test
-    public void getTraineeProfile_InternalServerError_ReturnsInternalServerError() {
+    public void Given_AuthenticateServiceInitialized_When_GettingTraineeProfile_Then_ReturnsInternalServerErrorOnServerError() {
         String username = "test";
         String password = "password";
         when(authenticateService.matchUserCredentials(username, password)).thenThrow(RuntimeException.class);
@@ -183,7 +183,7 @@ class TraineeControllerTest {
 
 
     @Test
-    public void updateTraineeProfile_InvalidCredentials_ReturnsUnauthorized() {
+    public void Given_AuthenticateServiceInitialized_When_UpdatingTraineeProfile_Then_ReturnsUnauthorizedResponseOnInvalidCredentials() {
         String username = "test";
         String password = "password";
         TraineeUpdateDTO updateDTO = new TraineeUpdateDTO();
@@ -196,7 +196,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void updateTraineeProfile_InternalServerError_ReturnsInternalServerError() {
+    public void Given_TraineeServiceInitialized_When_UpdatingTraineeProfile_Then_ReturnsInternalServerErrorOnServerError() {
         String username = "test";
         String password = "password";
         TraineeUpdateDTO updateDTO = new TraineeUpdateDTO();
@@ -210,7 +210,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void updateTraineeStatus_ValidRequest_Success() {
+    public void Given_TraineeServiceInitialized_When_UpdatingTraineeStatus_Then_ReturnsOkResponseOnSuccess() {
         String username = "test";
         boolean isActive = true;
 
@@ -222,7 +222,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void getTraineeTrainingsList_ValidRequest_Success() {
+    public void Given_TraineeServiceInitialized_When_GettingTraineeTrainingsList_Then_ReturnsOkResponseOnSuccess() {
         String username = "test";
         Date fromDate = new Date();
         Date toDate = new Date();
@@ -242,7 +242,7 @@ class TraineeControllerTest {
 
 
     @Test
-    public void getTraineeTrainingsList_InternalServerError_ReturnsInternalServerError() {
+    public void Given_TraineeServiceInitialized_When_GettingTraineeTrainingsList_Then_ReturnsInternalServerErrorOnServerError() {
         String username = "test";
         Date fromDate = new Date();
         Date toDate = new Date();
@@ -262,7 +262,6 @@ class TraineeControllerTest {
 
     @Test
     public void updateTraineeTrainerList_ValidRequest_Success() {
-        // Given
         String traineeUsername = "trainee";
         List<String> trainerUsernames = Collections.singletonList("trainer");
         List<TrainerResponse> updatedTrainers = Collections.singletonList(new TrainerResponse());
@@ -308,7 +307,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void updateTraineeTrainerList_TraineeNotFound_ReturnsNotFound() {
+    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainersList_Then_ReturnsNotFoundResponseIfTraineeNotFound() {
         String traineeUsername = "trainee";
         List<String> trainerUsernames = Collections.singletonList("trainer");
 

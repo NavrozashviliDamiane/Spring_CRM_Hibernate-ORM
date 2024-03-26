@@ -34,7 +34,7 @@ public class TrainerControllerTest {
     private TrainerController trainerController;
 
     @Test
-    void registerTrainer_ReturnsCreatedResponse_WhenTrainerCreatedSuccessfully() {
+    void GivenValidTrainerRegistrationRequest_WhenTrainerCreatedSuccessfully_ThenReturnCreatedResponse() {
         TrainerRegistrationRequest request = new TrainerRegistrationRequest();
         request.setFirstName("John");
         request.setLastName("Doe");
@@ -57,7 +57,7 @@ public class TrainerControllerTest {
     }
 
     @Test
-    void registerTrainer_ReturnsInternalServerError_WhenTrainerCreationFails() {
+    void GivenValidTrainerRegistrationRequest_WhenTrainerCreationFails_ThenReturnInternalServerError() {
         TrainerRegistrationRequest request = new TrainerRegistrationRequest();
         request.setFirstName("John");
         request.setLastName("Doe");
@@ -72,7 +72,7 @@ public class TrainerControllerTest {
     }
 
     @Test
-    public void testGetTrainerProfile_Success() {
+    public void GivenValidCredentials_WhenGettingTrainerProfile_ThenReturnSuccessWithProfileDTO() {
         String username = "testuser";
         String password = "testpassword";
         TrainerProfileDTO profileDTO = new TrainerProfileDTO();
@@ -92,7 +92,7 @@ public class TrainerControllerTest {
     }
 
     @Test
-    public void testGetTrainerProfile_Unauthorized() {
+    public void GivenInvalidCredentials_WhenGettingTrainerProfile_ThenReturnUnauthorized() {
         String username = "testuser";
         String password = "testpassword";
 
@@ -108,7 +108,7 @@ public class TrainerControllerTest {
     }
 
     @Test
-    public void testGetTrainerProfile_TrainerNotFound() {
+    public void GivenValidCredentials_WhenGettingTrainerProfile_ThenReturnTrainerNotFound() {
         String username = "testuser";
         String password = "testpassword";
 
@@ -126,7 +126,7 @@ public class TrainerControllerTest {
 
 
     @Test
-    void testGetUnassignedActiveTrainersByTraineeUsername_Success() {
+    void GivenValidTraineeUsernameAndPassword_WhenGettingUnassignedActiveTrainers_ThenReturnSuccessWithTrainersList() {
         when(authenticateService.matchUserCredentials("traineeUsername", "password")).thenReturn(true);
 
         List<TrainerDTO> trainers = new ArrayList<>();
@@ -142,7 +142,7 @@ public class TrainerControllerTest {
     }
 
     @Test
-    void testGetUnassignedActiveTrainersByTraineeUsername_Unauthorized() {
+    void GivenInvalidUsernameAndPassword_WhenGettingUnassignedActiveTrainers_ThenReturnUnauthorized() {
         when(authenticateService.matchUserCredentials("invalidUsername", "invalidPassword")).thenReturn(false);
 
         ResponseEntity<List<TrainerDTO>> responseEntity = trainerController.getUnassignedActiveTrainersByTraineeUsername("invalidUsername", "invalidPassword");
@@ -155,7 +155,7 @@ public class TrainerControllerTest {
     }
 
     @Test
-    public void updateTrainerStatus_Success_ReturnsOk() {
+    public void GivenValidUsernameAndPassword_WhenUpdatingTrainerStatus_ThenReturnSuccessWithOkStatus() {
         String username = "test";
         boolean isActive = true;
 
@@ -168,22 +168,22 @@ public class TrainerControllerTest {
 
 
     @Test
-    public void updateTrainerProfile_Success_ReturnsOk() {
+    public void GivenValidTrainerUpdateDTO_WhenUpdatingTrainerProfile_ThenReturnSuccessWithUpdatedProfile() {
         TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO(
-                "trainer_username", // username
-                "trainer_password", // password
-                "John", // firstName
-                "Doe", // lastName
-                true, // isActive
-                "Java Programming" // specialization
+                "trainer_username",
+                "trainer_password",
+                "John",
+                "Doe",
+                true,
+                "Java Programming"
         );
 
         TrainerProfileDTO updatedProfile = new TrainerProfileDTO(
-                "John", // firstName
-                "Doe", // lastName
-                "Java Programming", // specialization
-                true, // isActive
-                List.of( // List of TraineeDTOs (sample data)
+                "John",
+                "Doe",
+                "Java Programming",
+                true,
+                List.of(
                         new TraineeDTO("trainee1", "Alice", "password"),
                         new TraineeDTO("trainee2", "Bob", "password")
                 )
@@ -199,7 +199,7 @@ public class TrainerControllerTest {
     }
 
     @Test
-    public void updateTrainerProfile_TrainerNotFound_ReturnsNotFound() {
+    public void GivenValidTrainerUpdateDTO_WhenUpdatingTrainerProfile_ThenReturnTrainerNotFound() {
         TrainerUpdateDTO trainerUpdateDTO = new TrainerUpdateDTO(
                 "trainer_username",
                 "trainer_password",
@@ -220,8 +220,7 @@ public class TrainerControllerTest {
 
 
     @Test
-    void getTrainerTrainings_ReturnsTrainings() {
-        // Given
+    void GivenValidCredentialsAndDateRange_WhenGettingTrainerTrainings_ThenReturnSuccessWithTrainingsList() {
         String username = "test";
         String password = "password";
         Date periodFrom = new Date();
@@ -243,7 +242,7 @@ public class TrainerControllerTest {
     }
 
     @Test
-    void getTrainerTrainings_AuthenticationFailed_ReturnsUnauthorized() {
+    void GivenInvalidCredentials_WhenGettingTrainerTrainings_ThenReturnUnauthorized() {
         String username = "test";
         String password = "password";
         Date periodFrom = new Date();

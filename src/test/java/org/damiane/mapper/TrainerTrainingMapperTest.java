@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TrainerTrainingMapperTest {
 
     @Test
-    void mapTrainingToResponseDTO_ReturnsCorrectDTO() {
+    void mapTrainingToResponseDTO_CorrectDTO_ReturnsExpectedResponse() {
         User user = new User();
         user.setUsername("trainee_username");
 

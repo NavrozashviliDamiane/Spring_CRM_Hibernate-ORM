@@ -13,7 +13,7 @@ public class TrainingToTrainerMapperTest {
     private final TrainingToTrainerMapper mapper = new TrainingToTrainerMapper();
 
     @Test
-    void mapTrainingToTrainerDTO_ReturnsCorrectTrainerDTO() {
+    void mapTrainingToTrainerDTO_TrainingWithTrainerAndType_ReturnsCorrectTrainerDTO() {
         Training training = mock(Training.class);
         Trainer trainer = new Trainer();
         User trainerUser = new User();

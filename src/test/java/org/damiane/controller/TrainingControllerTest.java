@@ -23,7 +23,7 @@ class TrainingControllerTest {
     private TrainingController trainingController;
 
     @Test
-    void addTraining_ValidRequest_ReturnsOk() {
+    void GivenValidTrainingRequest_WhenAddingTraining_ThenReturnOkStatus() {
         TrainingRequest request = new TrainingRequest();
         request.setTraineeUsername("trainee");
         request.setTrainerUsername("trainer");

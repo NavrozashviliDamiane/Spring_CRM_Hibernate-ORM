@@ -33,8 +33,7 @@ public class TrainerProfileDtoCreatorTest {
     }
 
     @Test
-    public void testCreateTrainerProfileDTO() {
-        // Mock data
+    public void createTrainerProfileDTO_CreatesProfileDTO_WhenTrainerAndTrainingsExist() {
         Trainer trainer = new Trainer();
         User user = new User();
         user.setFirstName("John");

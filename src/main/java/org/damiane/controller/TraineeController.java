@@ -1,7 +1,6 @@
 package org.damiane.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 
+@Tag(name = "User", description = "User-related operations")
 @RestController
 @Slf4j
 @RequestMapping("/api/trainees")
@@ -51,6 +51,7 @@ public class TraineeController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Get user by ID")
     public ResponseEntity<UserCredentialsDTO> registerTrainee(@Validated @RequestBody TraineeRegistrationDTO registrationDTO) {
 
         log.info("REST call made to /api/trainees/register endpoint. Request: {}", registrationDTO);

@@ -57,7 +57,7 @@ class TraineeServiceImplTest {
     private TraineeServiceImpl traineeService;
 
     @Test
-    void createTrainee_CreatesTraineeSuccessfully_WhenValidDataProvided() {
+    void When_CreateTraineeWithValidData_Then_TraineeIsSuccessfullyCreated() {
 
         String firstName = "Damiane";
         String lastName = "Navro";
@@ -85,7 +85,7 @@ class TraineeServiceImplTest {
 
 
     @Test
-    void getTraineeProfile_CreatesTraineeSuccessfully_WhenUserExists() {
+    void When_GetTraineeProfileWithExistingUser_Then_ReturnTraineeProfileDTO() {
         String username = "testUser";
         Trainee trainee = new Trainee();
         trainee.setId(1L);
@@ -113,7 +113,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void getTraineeProfile_TraineeNotFound_WhenUserDoesNotExist() {
+    void When_GetTraineeProfileWithNonExistingUser_Then_ReturnNull() {
         String username = "nonExistentUser";
         when(traineeRepository.findByUserUsername(username)).thenReturn(null);
 
@@ -128,7 +128,7 @@ class TraineeServiceImplTest {
 
 
     @Test
-    void updateTraineeProfile_TraineeNotFound() {
+    void When_UpdateTraineeProfileWithNonExistingUser_Then_ReturnNull() {
         String username = "nonExistentUser";
         when(traineeRepository.findByUserUsername(username)).thenReturn(null);
 
@@ -142,7 +142,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void updateTraineeProfile_ThrowsException_WhenErrorOccurs() {
+    void When_UpdateTraineeProfileThrowsException_Then_ThrowRuntimeException() {
         String username = "testUser";
         when(traineeRepository.findByUserUsername(username)).thenThrow(new RuntimeException("Mocked exception"));
 
@@ -155,7 +155,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void updateTraineeStatus_TraineeFound_Active() {
+    void When_UpdateTraineeStatusWithExistingTrainee_Active_Then_UserIsActive() {
         String username = "trainee";
         boolean isActive = true;
         Trainee trainee = new Trainee();
@@ -170,7 +170,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void updateTraineeStatus_TraineeNotFound() {
+    void When_UpdateTraineeStatusWithNonExistingTrainee_Then_NoActionTaken() {
         String username = "nonexistent_trainee";
         boolean isActive = true;
         when(traineeRepository.findByUserUsername(username)).thenReturn(null);
@@ -181,7 +181,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void deleteTraineeByUsername_Success() {
+    void When_DeleteExistingTraineeWithTrainings_Then_SuccessfullyDeleteTraineeAndTrainings() {
         String username = "existing_trainee";
         Trainee trainee = new Trainee();
         trainee.setId(1L);
@@ -203,7 +203,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void deleteTraineeByUsername_WithTrainings() {
+    void When_DeleteExistingTraineeWithNoTrainings_Then_SuccessfullyDeleteTrainee() {
         String username = "existing_trainee";
         Trainee trainee = new Trainee();
         trainee.setId(1L);
@@ -225,7 +225,7 @@ class TraineeServiceImplTest {
 
 
     @Test
-    void getTraineeTrainingsList_Success() {
+    void When_GetTraineeTrainingsList_Then_SuccessfullyRetrieveTrainingsList() {
         String username = "trainee_username";
         String password = "trainee_password";
         Date fromDate = new Date();
@@ -254,7 +254,7 @@ class TraineeServiceImplTest {
 
 
     @Test
-    void updateTraineeTrainerList_TraineeFoundAndTrainerFound_TrainingUpdated() {
+    void When_UpdateTraineeTrainerList_WithExistingTraineeAndTrainers_Then_SuccessfullyUpdateTraining() {
         String traineeUsername = "trainee_username";
         List<String> trainerUsernames = List.of("trainer1", "trainer2");
 

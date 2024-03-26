@@ -11,7 +11,7 @@ public class TrainingTypeMapperTest {
     private final TrainingTypeMapper mapper = new TrainingTypeMapper();
 
     @Test
-    void mapToTrainingTypeDTO_ReturnsCorrectTrainingTypeDTO() {
+    void mapToTrainingTypeDTO_TrainingType_ReturnsCorrectTrainingTypeDTO() {
         TrainingType trainingType = new TrainingType();
         trainingType.setId(1L);
         trainingType.setTrainingType(TrainingTypeValue.CARDIO);
