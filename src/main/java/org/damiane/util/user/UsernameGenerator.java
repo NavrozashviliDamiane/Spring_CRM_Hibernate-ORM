@@ -1,4 +1,4 @@
-package org.damiane.util;
+package org.damiane.util.user;
 
 import org.damiane.repository.UserRepository;
 
@@ -23,7 +23,7 @@ public class UsernameGenerator {
         return username;
     }
 
-    private boolean usernameAlreadyExists(String username) {
+    public boolean usernameAlreadyExists(String username) {
         return userRepository.existsByUsername(username);
     }
 }

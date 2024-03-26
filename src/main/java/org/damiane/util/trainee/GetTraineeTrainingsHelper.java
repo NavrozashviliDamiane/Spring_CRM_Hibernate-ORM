@@ -76,10 +76,18 @@ public class GetTraineeTrainingsHelper {
                     TrainingDTO trainingDTO = new TrainingDTO();
                     trainingDTO.setTrainingName(training.getTrainingName());
                     trainingDTO.setTrainingDate(training.getTrainingDate());
-                    trainingDTO.setTrainingType(training.getTrainingType().getTrainingType().toString());
+                    if (training.getTrainingType() != null) {
+                        trainingDTO.setTrainingType(training.getTrainingType().getTrainingType().toString());
+                    } else {
+                        trainingDTO.setTrainingType("Unknown");
+                    }
                     trainingDTO.setTrainingDuration(training.getTrainingDuration());
-                    trainingDTO.setTrainerName(training.getTrainer().getUser().getFirstName() + " " +
-                            training.getTrainer().getUser().getLastName());
+                    if (training.getTrainer() != null && training.getTrainer().getUser() != null) {
+                        trainingDTO.setTrainerName(training.getTrainer().getUser().getFirstName() + " " +
+                                training.getTrainer().getUser().getLastName());
+                    } else {
+                        trainingDTO.setTrainerName("Unknown");
+                    }
                     return trainingDTO;
                 })
                 .collect(Collectors.toList());

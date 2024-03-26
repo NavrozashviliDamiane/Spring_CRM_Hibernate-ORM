@@ -15,9 +15,9 @@ import org.damiane.repository.TrainerRepository;
 import org.damiane.repository.TrainingRepository;
 import org.damiane.repository.TrainingTypeRepository;
 import org.damiane.service.UserService;
-import org.damiane.util.TrainerProfileDtoCreator;
-import org.damiane.util.TrainerSpecializationUpdater;
-import org.damiane.util.UserUpdateHelper;
+import org.damiane.util.trainer.TrainerProfileDtoCreator;
+import org.damiane.util.trainer.TrainerSpecializationUpdater;
+import org.damiane.util.user.UserUpdateHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +30,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @ExtendWith(MockitoExtension.class)

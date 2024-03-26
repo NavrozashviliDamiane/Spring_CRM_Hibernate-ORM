@@ -1,4 +1,4 @@
-package org.damiane.util;
+package org.damiane.util.user;
 
 import org.damiane.dto.trainer.TrainerUpdateDTO;
 import org.damiane.entity.User;

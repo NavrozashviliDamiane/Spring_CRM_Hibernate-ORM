@@ -10,16 +10,15 @@ import org.damiane.service.TrainerService;
 import org.damiane.service.UserService;
 import org.damiane.mapper.TrainerMapper;
 import org.damiane.mapper.TrainerTrainingMapper;
-import org.damiane.util.TrainerProfileDtoCreator;
-import org.damiane.util.TrainerSpecializationUpdater;
-import org.damiane.util.UserUpdateHelper;
+import org.damiane.util.trainer.TrainerProfileDtoCreator;
+import org.damiane.util.trainer.TrainerSpecializationUpdater;
+import org.damiane.util.user.UserUpdateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

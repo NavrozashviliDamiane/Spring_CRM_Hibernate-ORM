@@ -1,4 +1,4 @@
-package org.damiane.util;
+package org.damiane.util.user;
 
 import java.security.SecureRandom;
 import java.util.Random;

@@ -3,18 +3,15 @@ package org.damiane.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.damiane.dto.user.ChangePasswordRequest;
 import org.damiane.entity.User;
-import org.damiane.exception.AuthenticationException;
-import org.damiane.exception.UnauthorizedAccessException;
 import org.damiane.repository.UserRepository;
 import org.damiane.service.AuthenticateService;
 import org.damiane.service.UserService;
-import org.damiane.util.PasswordGenerator;
-import org.damiane.util.UsernameGenerator;
+import org.damiane.util.user.PasswordGenerator;
+import org.damiane.util.user.UsernameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
