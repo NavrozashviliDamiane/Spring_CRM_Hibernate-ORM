@@ -21,7 +21,7 @@ public class JpaConfig {
     public HibernateJpaVendorAdapter hibernateJpaVendorAdapter() {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         hibernateJpaVendorAdapter.setGenerateDdl(true);
-        hibernateJpaVendorAdapter.setShowSql(true); // Enable SQL logs
+        hibernateJpaVendorAdapter.setShowSql(true);
         return hibernateJpaVendorAdapter;
     }
 
@@ -50,5 +50,4 @@ public class JpaConfig {
         transactionManager.setEntityManagerFactory(emf);
         return transactionManager;
     }
-
 }

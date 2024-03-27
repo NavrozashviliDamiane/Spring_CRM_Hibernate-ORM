@@ -1,34 +1,29 @@
 package org.damiane.service;
 
+import org.damiane.dto.trainer.*;
 import org.damiane.entity.Trainer;
-import org.damiane.entity.TrainingType;
-import org.damiane.entity.TrainingTypeValue;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
 public interface TrainerService {
 
-    Trainer getTrainerByUsername(String username);
 
-    void changeTrainerPassword(Long trainerId, String newPassword);
+    TrainerProfileDTO getTrainerProfile(String username, String password);
 
-    boolean matchTrainerCredentials(String username, String password);
-
-    List<Trainer> getAllTrainers();
-    Trainer getTrainerById(Long id);
+    @Transactional
+    Trainer createTrainer(TrainerRegistrationRequest request);
 
 
-    Trainer updateTrainerProfile(String username, String firstName, String lastName, TrainingTypeValue trainingTypeValue);
+    @Transactional
+    void updateTrainerStatus(String username, boolean isActive);
 
-    Trainer createTrainer(String firstName, String lastName, TrainingType trainingType);
+    List<TrainerDTO> findUnassignedActiveTrainersByTraineeUsername(String traineeUsername, String password);
 
-    void deleteTrainer(Long id);
+    @Transactional
+    TrainerProfileDTO updateTrainerProfile(TrainerUpdateDTO trainerUpdateDTO);
 
-    // TrainerServiceImpl.java
-    void activateTrainer(Long trainerId);
-
-    void deactivateTrainer(Long trainerId);
-
-    List<Trainer> findUnassignedTrainersByTraineeUsername(String traineeUsername, String password);
+    @Transactional(readOnly = true)
+    List<TrainerTrainingResponseDTO> getTrainerTrainings(TrainerTrainingsRequestDTO request);
 }

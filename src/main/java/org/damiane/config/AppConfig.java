@@ -1,24 +1,13 @@
 package org.damiane.config;
 
-import org.damiane.repository.TraineeRepository;
-import org.damiane.service.TraineeService;
-import org.damiane.service.TraineeServiceImpl;
-import org.springframework.context.annotation.Bean;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
+@OpenAPIDefinition
 @ComponentScan(basePackages = {"org.damiane"})
-@ComponentScan(basePackages = "org.damiane.repository")
-@ComponentScan(basePackages = "org.damiane.service")
-@ComponentScan(basePackages = "org.damiane.entity")
-@ComponentScan(basePackages = "org.damiane.config")
 public class AppConfig {
 
-
-
-
-
 }
-
-

@@ -1,41 +1,41 @@
 package org.damiane.service;
 
+import org.damiane.dto.trainee.TraineeProfileDTO;
+import org.damiane.dto.trainer.TrainerResponse;
+import org.damiane.dto.training.TrainingDTO;
 import org.damiane.entity.Trainee;
-import org.damiane.entity.Trainer;
-import org.damiane.entity.TrainingTypeValue;
+import org.damiane.exception.TraineeNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
 @Service
 public interface TraineeService {
-    List<Trainee> getAllTrainees();
-    Trainee getTraineeById(Long id);
 
-    boolean matchTraineeCredentials(String username, String password);
-
-    Trainee getTraineeByUsername(String username);
+    TraineeProfileDTO getTraineeProfile(String username);
 
 
+    @Transactional
+    Trainee updateTraineeProfile(String username, String firstName, String password, String lastName,
+                                 Date dateOfBirth, String address, boolean isActive);
 
-    Trainee updateTraineeProfile(String username, String firstName, String lastName, Date dateOfBirth, String address);
-
-    void changeTraineePassword(Long traineeId, String newPassword);
 
     Trainee createTrainee(String firstName, String lastName, Date dateOfBirth, String address);
 
-    void deleteTrainee(Long id);
+
+
+    @Transactional
+    void updateTraineeStatus(String username, boolean isActive);
 
 
 
-    void deactivateTrainee(Long traineeId);
-
-    void activateTrainee(Long traineeId);
-
+    @Transactional
     void deleteTraineeByUsername(String username);
 
+    List<TrainingDTO> getTraineeTrainingsList(String username, String password, Date fromDate, Date toDate,
+                                              String trainerName, String trainingTypeName);
 
-    // TraineeServiceImpl.java
-
+    List<TrainerResponse> updateTraineeTrainerList(String traineeUsername, List<String> trainerUsernames) throws TraineeNotFoundException;
 }

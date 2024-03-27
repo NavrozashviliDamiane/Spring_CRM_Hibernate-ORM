@@ -36,3 +36,12 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Ignore SonarLint related files
+.sonarlint/
+
+# Ignore SonarQube analysis properties
+sonar-project.properties
+
+# Ignore SonarQube report files
+/sonar-report/

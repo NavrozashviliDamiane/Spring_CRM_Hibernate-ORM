@@ -1,15 +1,15 @@
 package org.damiane.entity;
 
 import java.util.Date;
-
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.springframework.stereotype.Component;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Component
 @Table(name = "trainings")
 public class Training {
 
@@ -17,7 +17,7 @@ public class Training {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "traineeid", referencedColumnName = "id")
     private Trainee trainee;
 

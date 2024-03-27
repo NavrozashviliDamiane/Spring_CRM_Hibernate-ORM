@@ -1,29 +1,3 @@
 
-_
-java:S1854"BRemove this useless assignment to local variable "trainerService".(®ñÖ8›âùƒß1
-_
-java:S1854"BRemove this useless assignment to local variable "traineeService".(áì °8›âùƒß1
-a
-java:S1854"?Remove this useless assignment to local variable "userService".(şıìßÿÿÿÿÿ8›âùƒß1
-R
-java:S1481"0Remove this unused "userService" local variable.(şıìßÿÿÿÿÿ8©âùƒß1
-P
-java:S1481"3Remove this unused "traineeService" local variable.(áì °8«âùƒß1
-P
-java:S1481"3Remove this unused "trainerService" local variable.(®ñÖ8¬âùƒß1
-N
-java:S1874",Remove this use of "Date"; it is deprecated.(ü¡ğıûÿÿÿÿ8²âùƒß1
-I
-java:S1874",Remove this use of "Date"; it is deprecated.(Ääˆ¦8³âùƒß1
-L	java:S106%"+Replace this use of System.out by a logger.(×°¯­şÿÿÿÿ8Àâùƒß1
-L	java:S106'"+Replace this use of System.out by a logger.(ô¨şÿÿÿÿ8Ââùƒß1
-G	java:S106)"+Replace this use of System.out by a logger.(šÌ‡™8Åâùƒß1
-_
-java:S1128"BRemove this unused import 'org.damiane.repository.UserRepository'.(Ã”øÊ8¥³†ß1
-K
-java:S1128	"/Remove this unused import 'java.sql.Timestamp'.(èò½+8ª³†ß1
-T
-java:S1128
-"7Remove this unused import 'java.text.SimpleDateFormat'.(ú¡ÙÛ8«³†ß1
-O
-java:S1128"-Remove this unused import 'java.util.Random'.(èøÉ›ùÿÿÿÿ8¬³†ß1
+
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Çµí‘8ñ‡ç‡æ1
