@@ -13,6 +13,7 @@ import org.damiane.dto.training.TrainingDTO;
 import org.damiane.dto.user.UserCredentialsDTO;
 import org.damiane.entity.Trainee;
 import org.damiane.exception.AuthenticationException;
+import org.damiane.exception.TraineeNotFoundException;
 import org.damiane.service.AuthenticateService;
 import org.damiane.service.TraineeService;
 import org.damiane.mapper.TraineeMapper;
@@ -200,7 +201,7 @@ public class TraineeController {
     @PutMapping("/{traineeUsername}/trainers")
     public ResponseEntity<List<TrainerResponse>> updateTraineeTrainerList(
             @PathVariable String traineeUsername,
-            @RequestBody List<String> trainerUsernames) {
+            @RequestBody List<String> trainerUsernames) throws TraineeNotFoundException {
         log.info("Received request to update trainer list for trainee: {}", traineeUsername);
 
         List<TrainerResponse> updatedTrainers = traineeService.updateTraineeTrainerList(traineeUsername, trainerUsernames);

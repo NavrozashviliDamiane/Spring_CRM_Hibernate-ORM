@@ -4,6 +4,7 @@ import org.damiane.dto.trainee.TraineeProfileDTO;
 import org.damiane.dto.trainer.TrainerResponse;
 import org.damiane.dto.training.TrainingDTO;
 import org.damiane.entity.Trainee;
+import org.damiane.exception.TraineeNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,5 +37,5 @@ public interface TraineeService {
     List<TrainingDTO> getTraineeTrainingsList(String username, String password, Date fromDate, Date toDate,
                                               String trainerName, String trainingTypeName);
 
-    List<TrainerResponse> updateTraineeTrainerList(String traineeUsername, List<String> trainerUsernames);
+    List<TrainerResponse> updateTraineeTrainerList(String traineeUsername, List<String> trainerUsernames) throws TraineeNotFoundException;
 }

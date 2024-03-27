@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.damiane.dto.trainee.TraineeProfileDTO;
 import org.damiane.dto.training.TrainingDTO;
 import org.damiane.entity.*;
+import org.damiane.exception.TraineeNotFoundException;
 import org.damiane.mapper.TrainingToTrainerMapper;
 import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
@@ -254,7 +255,7 @@ class TraineeServiceImplTest {
 
 
     @Test
-    void When_UpdateTraineeTrainerList_WithExistingTraineeAndTrainers_Then_SuccessfullyUpdateTraining() {
+    void When_UpdateTraineeTrainerList_WithExistingTraineeAndTrainers_Then_SuccessfullyUpdateTraining() throws TraineeNotFoundException {
         String traineeUsername = "trainee_username";
         List<String> trainerUsernames = List.of("trainer1", "trainer2");
 

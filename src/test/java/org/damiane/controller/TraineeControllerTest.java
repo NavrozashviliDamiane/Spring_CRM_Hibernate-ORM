@@ -8,6 +8,7 @@ import org.damiane.dto.user.UserCredentialsDTO;
 import org.damiane.dto.trainee.TraineeRegistrationDTO;
 import org.damiane.entity.Trainee;
 import org.damiane.entity.User;
+import org.damiane.exception.TraineeNotFoundException;
 import org.damiane.service.AuthenticateService;
 import org.damiane.service.TraineeService;
 import org.junit.jupiter.api.Test;
@@ -99,7 +100,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainerList_Then_ReturnsOkResponseOnSuccess() {
+    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainerList_Then_ReturnsOkResponseOnSuccess() throws TraineeNotFoundException {
         List<TrainerResponse> updatedTrainers = Arrays.asList(
                 new TrainerResponse("username1", "John", "Doe", "Specialization1"),
                 new TrainerResponse("username2", "Jane", "Smith", "Specialization2")
@@ -115,7 +116,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainerList_Then_ReturnsNotFoundResponseIfTraineeNotFound() {
+    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainerList_Then_ReturnsNotFoundResponseIfTraineeNotFound() throws TraineeNotFoundException {
         when(traineeService.updateTraineeTrainerList(anyString(), anyList())).thenReturn(null);
 
         ResponseEntity<List<TrainerResponse>> responseEntity = traineeController.updateTraineeTrainerList("nonExistingTrainee", Arrays.asList("trainerUsername1", "trainerUsername2"));
@@ -261,7 +262,7 @@ class TraineeControllerTest {
 
 
     @Test
-    public void updateTraineeTrainerList_ValidRequest_Success() {
+    public void updateTraineeTrainerList_ValidRequest_Success() throws TraineeNotFoundException {
         String traineeUsername = "trainee";
         List<String> trainerUsernames = Collections.singletonList("trainer");
         List<TrainerResponse> updatedTrainers = Collections.singletonList(new TrainerResponse());
@@ -277,7 +278,7 @@ class TraineeControllerTest {
 
 
     @Test
-    public void updateTraineeTrainerList_InternalServerError_ReturnsInternalServerError() {
+    public void updateTraineeTrainerList_InternalServerError_ReturnsInternalServerError() throws TraineeNotFoundException {
         String traineeUsername = "trainee";
         List<String> trainerUsernames = Collections.singletonList("trainer");
 
@@ -292,7 +293,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void updateTraineeTrainerList_Success_ReturnsOk() {
+    public void updateTraineeTrainerList_Success_ReturnsOk() throws TraineeNotFoundException {
         String traineeUsername = "trainee";
         List<String> trainerUsernames = Collections.singletonList("trainer");
         List<TrainerResponse> updatedTrainers = Collections.singletonList(new TrainerResponse());
@@ -307,7 +308,7 @@ class TraineeControllerTest {
     }
 
     @Test
-    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainersList_Then_ReturnsNotFoundResponseIfTraineeNotFound() {
+    public void Given_TraineeServiceInitialized_When_UpdatingTraineeTrainersList_Then_ReturnsNotFoundResponseIfTraineeNotFound() throws TraineeNotFoundException {
         String traineeUsername = "trainee";
         List<String> trainerUsernames = Collections.singletonList("trainer");
 

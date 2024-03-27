@@ -6,6 +6,7 @@ import org.damiane.dto.trainer.TrainerDTO;
 import org.damiane.dto.trainer.TrainerResponse;
 import org.damiane.dto.training.TrainingDTO;
 import org.damiane.entity.*;
+import org.damiane.exception.TraineeNotFoundException;
 import org.damiane.mapper.TrainingToTrainerMapper;
 import org.damiane.repository.TraineeRepository;
 import org.damiane.repository.TrainerRepository;
@@ -225,7 +226,7 @@ public class TraineeServiceImpl implements TraineeService {
 
 
     @Override
-    public List<TrainerResponse> updateTraineeTrainerList(String traineeUsername, List<String> trainerUsernames) {
+    public List<TrainerResponse> updateTraineeTrainerList(String traineeUsername, List<String> trainerUsernames) throws TraineeNotFoundException {
 
         log.info("Updating trainee's trainer list for trainee: {}", traineeUsername);
 
@@ -233,8 +234,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         if (trainee == null) {
             log.info("Trainee not found with username: {}", traineeUsername);
-
-            return null;
+            throw new TraineeNotFoundException("Trainee not found with username: " + traineeUsername);
         }
 
         Long traineeId = trainee.getId();
